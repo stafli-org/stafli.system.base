@@ -29,3 +29,34 @@ MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 ENV TERM="linux" \
     DEBIAN_FRONTEND="noninteractive"
 
+#
+# Packages
+#
+
+# Disable installation of optional apt packages and enable contrib and non-free components in debian repositories
+RUN printf "# Disable installation of optional apt packages...\n"; \
+    printf "\n# Disable recommended and suggested packages\n\
+APT::Install-Recommends "\""false"\"";\n\
+APT::Install-Suggests "\""false"\"";\n\
+\n" >> /etc/apt/apt.conf; \
+    printf "# Enable contrib and non-free components in debian repositories...\n"; \
+    sed -i "s>main>main contrib non-free>" /etc/apt/sources.list;
+
+# Install the Package Manager related packages and refresh the GPG keys
+#  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
+#  - ca-certificates: adds trusted PEM files of CA certificates to the system
+#  - apt-utils: for apt-extracttemplates, used by debconf and to improve compatibility in docker
+#  - apt-transport-https: to allow HTTPS connections to sources in apt
+#  - gnupg: for gnupg, the GNU privacy guard cryptographic utility required by apt
+#  - gnupg-curl: to add support for secure HKPS keyservers
+#  - gpgv: for gpgv, the GNU privacy guard signature verification tool
+RUN printf "# Install the Package Manager related packages...\n"; \
+    apt-key update && \
+    apt-get update && apt-get install -qy \
+      openssl ca-certificates \
+      apt-utils apt-transport-https \
+      gnupg gnupg-curl gpgv; \
+    gpg --refresh-keys; \
+    printf "# Cleanup the Package Manager...\n"; \
+    apt-get clean && rm -rf /var/lib/apt/lists/*;
+

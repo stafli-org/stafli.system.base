@@ -28,3 +28,25 @@ MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 # Suppress warnings about the terminal
 ENV TERM="linux"
 
+#
+# Packages
+#
+
+# Install the Package Manager related packages and refresh the GPG keys
+#  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
+#  - ca-certificates: adds trusted PEM files of CA certificates to the system
+#  - yum-utils: to provide additional utilities such as package-cleanup in yum
+#  - yum-plugin-priorities: to provide priorities for packages from different repos in yum
+#  - yum-plugin-fastestmirror: to provide fastest mirror selection from a mirrorlist in yum
+#  - yum-plugin-keys: to provide key signing capabilities to yum
+#  - gnupg: for gnupg, the GNU privacy guard cryptographic utility required by yum
+RUN printf "# Install the Package Manager related packages...\n"; \
+    yum makecache && yum install -y \
+      openssl ca-certificates \
+      yum-utils yum-plugin-priorities \
+      yum-plugin-fastestmirror yum-plugin-keys \
+      gnupg; \
+    gpg --refresh-keys; \
+    printf "# Cleanup the Package Manager...\n"; \
+    yum clean all && rm -Rf /var/lib/yum/*;
+
