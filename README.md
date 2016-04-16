@@ -3,7 +3,8 @@ General-purpose system distro builds based on [Debian](https://www.debian.org/) 
 
 Requires [Docker Compose](https://docs.docker.com/compose/) 1.6.x or higher due to the [version 2](https://docs.docker.com/compose/compose-file/#versioning) format of the docker-compose.yml files.
 
-The docker-compose.yml are separated by distribution and require .env files to function properly.
+The docker-compose.yml are separated by distribution and require .env files to function properly.  
+A rudimentary script [docker-compose-helper.sh](../../tree/master/docker-compose-helper.sh) is provided to help with loading these.
 
 ## Distributions
 The profiles use the official images as a starting point:
@@ -31,6 +32,26 @@ These containers are generated upon issuing a create:
 - debian7_base_xxx
 - centos7_base_xxx
 - centos6_base_xxx
+
+## Usage
+
+### From GitHub repository (advanced)
+
+1. Download the repository [zip file](https://github.com/solict/docker-general-purpose-system-distro/archive/master.zip) and unpack it or clone the repository using:  
+`git clone https://github.com/solict/docker-general-purpose-system-distro.git`
+2. Navigate to the project directory with a terminal and type:  
+`docker-compose-helper --project=<distro> <operation>`
+
+Where <distro> is the distribution/directory and <operation> is the desired docker-compose operation.
+
+Examples:
+```
+./docker-compose-helper.sh --project=debian7 build
+./docker-compose-helper.sh --project=debian7 create
+./docker-compose-helper.sh --project=debian7 start
+./docker-compose-helper.sh --project=debian7 stop
+./docker-compose-helper.sh --project=debian7 rm
+```
 
 ## Credits
 Docker General Purpose System Distro  
