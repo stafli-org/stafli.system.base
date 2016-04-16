@@ -50,12 +50,15 @@ APT::Install-Suggests "\""false"\"";\n\
 #  - gnupg: for gnupg, the GNU privacy guard cryptographic utility required by apt
 #  - gnupg-curl: to add support for secure HKPS keyservers
 #  - gpgv: for gpgv, the GNU privacy guard signature verification tool
+# Add foreign repositories and GPG keys
+#  - N/A
 RUN printf "# Install the Package Manager related packages...\n"; \
     apt-key update && \
     apt-get update && apt-get install -qy \
       openssl ca-certificates \
       apt-utils apt-transport-https \
       gnupg gnupg-curl gpgv; \
+    printf "# Install the repositories and refresh the GPG keys...\n"; \
     gpg --refresh-keys; \
     printf "# Cleanup the Package Manager...\n"; \
     apt-get clean && rm -rf /var/lib/apt/lists/*;

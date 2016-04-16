@@ -40,12 +40,17 @@ ENV TERM="linux"
 #  - yum-plugin-fastestmirror: to provide fastest mirror selection from a mirrorlist in yum
 #  - yum-plugin-keys: to provide key signing capabilities to yum
 #  - gnupg: for gnupg, the GNU privacy guard cryptographic utility required by yum
+# Add foreign repositories and GPG keys
+#  - epel-release: for Extra Packages for Enterprise Linux (EPEL)
 RUN printf "# Install the Package Manager related packages...\n"; \
     yum makecache && yum install -y \
       openssl ca-certificates \
       yum-utils yum-plugin-priorities \
       yum-plugin-fastestmirror yum-plugin-keys \
       gnupg; \
+    printf "# Install the repositories and refresh the GPG keys...\n"; \
+    yum makecache && yum install -y \
+      epel-release; \
     gpg --refresh-keys; \
     printf "# Cleanup the Package Manager...\n"; \
     yum clean all && rm -Rf /var/lib/yum/*;
