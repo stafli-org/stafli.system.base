@@ -6,6 +6,8 @@ Requires [Docker Compose](https://docs.docker.com/compose/) 1.6.x or higher due 
 The docker-compose.yml are separated by distribution and require .env files to function properly.  
 A rudimentary script [docker-compose-helper.sh](../../tree/master/docker-compose-helper.sh) is provided to help with loading these.
 
+Scripts are also provided to help test and deploy the installation procedures in non-Docker environments.
+
 The images are automatically built at a [repository](https://hub.docker.com/r/solict/general-purpose-system-distro) in the Docker Hub registry.
 
 ## Distributions
@@ -19,21 +21,34 @@ The profiles use the official images as a starting point:
 
 ## Profiles
 These are the profiles described by the dockerfiles:
-- Base, built with common software for all distributions
+- Base, built with common software
+- Devel, built with additional development packages
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/solict/general-purpose-system-distro/tags/) upon building:
-- solict/general-purpose-system-distro:debian8_base
-- solict/general-purpose-system-distro:debian7_base
-- solict/general-purpose-system-distro:centos7_base
-- solict/general-purpose-system-distro:centos6_base
+- Base profile:
+  - solict/general-purpose-system-distro:debian8_base
+  - solict/general-purpose-system-distro:debian7_base
+  - solict/general-purpose-system-distro:centos7_base
+  - solict/general-purpose-system-distro:centos6_base
+- Devel profile:
+  - solict/general-purpose-system-distro:debian8_devel
+  - solict/general-purpose-system-distro:debian7_devel
+  - solict/general-purpose-system-distro:centos7_devel
+  - solict/general-purpose-system-distro:centos6_devel
 
 ## Containers
 These containers are generated upon issuing a create:
-- debian8_base_xxx
-- debian7_base_xxx
-- centos7_base_xxx
-- centos6_base_xxx
+- Base profile:
+  - debian8_base_xxx
+  - debian7_base_xxx
+  - centos7_base_xxx
+  - centos6_base_xxx
+- Devel profile:
+  - debian8_devel_xxx
+  - debian7_devel_xxx
+  - centos7_devel_xxx
+  - centos6_devel_xxx
 
 ## Usage
 
