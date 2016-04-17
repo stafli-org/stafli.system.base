@@ -126,3 +126,18 @@ RUN printf "# Install the Package Manager related packages...\n"; \
     printf "# Cleanup the Package Manager...\n"; \
     apt-get clean && rm -rf /var/lib/apt/lists/*;
 
+#
+# Configuration
+#
+
+# Configure root account, timezone and locales
+RUN printf "Configure root account...\n"; \
+    cp -R /etc/skel/. /root; \
+    printf "Configure timezone...\n"; \
+    echo "Etc/UTC" > /etc/timezone; \
+    printf "Configure locales...\n"; \
+    sed -i "s># en_US.UTF-8 UTF-8>en_US.UTF-8 UTF-8>" /etc/locale.gen && \
+    locale-gen;
+ENV TZ="Etc/UTC" \
+    LANGUAGE="en_US.UTF-8" LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8"
+

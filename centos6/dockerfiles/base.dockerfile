@@ -127,3 +127,23 @@ RUN printf "# Install the Package Manager related packages...\n"; \
     printf "# Cleanup the Package Manager...\n"; \
     yum clean all && rm -Rf /var/lib/yum/*;
 
+#
+# Configuration
+#
+
+# Configure root account, timezone and locales
+RUN printf "Configure root account...\n"; \
+    cp -R /etc/skel/. /root; \
+    printf "Configure timezone...\n"; \
+    echo "Etc/UTC" > /etc/timezone; \
+    printf "Configure locales...\n"; \
+    yum makecache && yum reinstall -y glibc-common; \
+    yum clean all && rm -Rf /var/lib/yum/*; \
+    localedef --list-archive | grep -v -i ^en | xargs localedef --delete-from-archive; \
+    mv /usr/lib/locale/locale-archive /usr/lib/locale/locale-archive.tmpl; \
+    build-locale-archive; \
+    localedef -v -c -i en_US -f UTF-8 en_US.UTF-8; \
+    rm -Rf /usr/lib/locale/tmp;
+ENV TZ="Etc/UTC" \
+    LANGUAGE="en_US.UTF-8" LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8"
+
