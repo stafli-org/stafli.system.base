@@ -6,6 +6,8 @@ Requires [Docker Compose](https://docs.docker.com/compose/) 1.6.x or higher due 
 The docker-compose.yml are separated by distribution and require .env files to function properly.  
 A rudimentary script [docker-compose-helper.sh](../../tree/master/docker-compose-helper.sh) is provided to help with loading these.
 
+The images are automatically built at a [repository](https://hub.docker.com/r/solict/general-purpose-system-distro) in the Docker Hub registry.
+
 ## Distributions
 The profiles use the official images as a starting point:
 - __Debian__, from the [official repository](https://hub.docker.com/_/debian/)
@@ -34,6 +36,23 @@ These containers are generated upon issuing a create:
 - centos6_base_xxx
 
 ## Usage
+
+### From Docker Hub repository (basics)
+
+Note: this method will not allow you to use the docker-compose files nor the script.
+
+1. To pull the images, try typing:  
+`docker pull <image_url>`
+2. You can start a new container interactively by typing:  
+`docker run -ti <image_url> /bin/bash`
+
+Where <image_url> is the full image url (lookup the image list above).
+
+Examples:
+```
+docker pull solict/general-purpose-system-distro:debian7_base
+docker run -ti solict/general-purpose-system-distro:debian7_base /bin/bash
+```
 
 ### From GitHub repository (advanced)
 
