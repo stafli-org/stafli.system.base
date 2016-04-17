@@ -52,6 +52,56 @@ APT::Install-Suggests "\""false"\"";\n\
 #  - gpgv: for gpgv, the GNU privacy guard signature verification tool
 # Add foreign repositories and GPG keys
 #  - N/A
+# Install base packages
+#  - bash: for bash, the GNU Bash shell
+#  - locales: to provide common files for locale support
+#  - tzdata: to provide time zone and daylight-saving time data
+#  - pwgen: for pwgen, the automatic password generation tool
+# Install daemon and utilities packages
+#  - supervisor: for supervisord, to launch and manage processes
+#  - dropbear: for dropbear, a lightweight SSH2 server and client that replaces OpenSSH
+#  - cron: for crond, the process scheduling daemon
+#  - anacron: for anacron, the cron-like program that doesn't go by time
+#  - rsyslog: for rsyslogd, the rocket-fast system for log processing
+#  - logrotate: for logrotate, the log rotation utility
+# Install administration packages
+#  - debianutils: for which and others, basic administration packages
+#  - procps: for kill, top and others, basic administration packages
+#  - htop: for htop, an interactive process viewer
+#  - iotop: for iotop, a simple top-like I/O monitor
+#  - iftop: for iftop, a simple top-like network monitor
+# Install programming packages
+#  - sed: for sed, the GNU stream editor
+#  - mawk: for awk, a faster interpreter for the AWK Programming Language
+#  - perl-base: for perl, an interpreter for the Perl Programming languange
+#  - python-minimal: for python, an interpreter for the Python Programming languange
+# Install find and revision control packages
+#  - grep: for grep/egrep/fgrep, the GNU utilities to search text in files
+#  - tree: for tree, displays directory tree, in color
+#  - findutils: for find, the file search utility
+#  - diffutils: for diff, the file comparison utility
+# Install archive and compression packages
+#  - tar: for tar, the GNU tar archiving utility
+#  - gzip: for gzip, the GNU compression utility which uses DEFLATE algorithm
+#  - bzip2: for bzip2, a compression utility, which uses the Burrows–Wheeler algorithm
+#  - zip: for zip, the InfoZip compression utility which uses various ZIP algorithms
+#  - unzip: for unzip, the InfoZip decompression utility which uses various ZIP algorithms
+#  - xz-utils: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
+# Install network diagnosis packages
+#  - iproute: for ip and others, the newer tools for routing and network configuration
+#  - iputils-ping: for ping/6, tools to test the reachability of network hosts
+#  - iputils-tracepath: for traceroute/6, tools to trace the network path to a remote host
+#  - dnsutils: for nslookup and dig, the BIND DNS client programs
+#  - netcat-openbsd: for netcat, the OpenBSD rewrite of netcat - the TCP/IP swiss army knife
+# Install network transfer packages
+#  - wget: for wget, a network utility to download via FTP and HTTP protocols
+#  - curl: for curl, a network utility to transfer data via FTP, HTTP, SCP, and other protocols
+#  - rsync: for rsync, a fast and versatile remote (and local) file-copying tool
+# Install misc packages
+#  - bash-completion: to add programmable completion for the bash shell
+#  - dialog: for dialog, to provide prompts for the bash shell
+#  - screen: for screen, the terminal multiplexer with VT100/ANSI terminal emulation
+#  - nano: for nano, a tiny editor based on pico
 RUN printf "# Install the Package Manager related packages...\n"; \
     apt-key update && \
     apt-get update && apt-get install -qy \
@@ -60,6 +110,19 @@ RUN printf "# Install the Package Manager related packages...\n"; \
       gnupg gnupg-curl gpgv; \
     printf "# Install the repositories and refresh the GPG keys...\n"; \
     gpg --refresh-keys; \
+    printf "# Install the required packages...\n"; \
+    apt-get update && apt-get install -qy \
+      bash locales tzdata pwgen \
+      supervisor dropbear cron anacron rsyslog logrotate \
+      debianutils procps htop iotop iftop \
+      sed mawk perl-base python-minimal \
+      grep tree findutils diffutils \
+      tar gzip bzip2 zip unzip xz-utils \
+      iproute iputils-ping iputils-tracepath dnsutils netcat-openbsd \
+      wget curl rsync \
+      bash-completion dialog screen nano; \
+    printf "# Remove the superfluous packages...\n"; \
+    apt-get autoremove --purge; \
     printf "# Cleanup the Package Manager...\n"; \
     apt-get clean && rm -rf /var/lib/apt/lists/*;
 
