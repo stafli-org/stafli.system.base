@@ -42,3 +42,19 @@ services:
     working_dir: "${general_working_dir}"
     command: "${service_base_command}"
 
+  devel:
+    labels:
+      - "${service_devel_label_url}.description=${service_devel_description}"
+      - "${service_devel_label_url}.vendor=${project_vendor}"
+      - "${service_devel_label_url}.license=${project_license}"
+      - "${service_devel_label_url}.architecture=${project_architecture}"
+      - "${service_devel_label_url}.version=${project_version}"
+    image: "${service_devel_image_url}"
+    build:
+      context: "${general_context}"
+      dockerfile: "${service_devel_dockerfile}"
+    logging:
+      driver: "${general_logging_driver}"
+    working_dir: "${general_working_dir}"
+    command: "${service_devel_command}"
+
