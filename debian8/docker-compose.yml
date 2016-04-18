@@ -37,8 +37,14 @@ services:
     build:
       context: "${general_context}"
       dockerfile: "${service_base_dockerfile}"
+      args:
+        app_dropbear_listen_addr: "${service_base_args_app_dropbear_listen_addr}"
+        app_dropbear_listen_port: "${service_base_args_app_dropbear_listen_port}"
+        app_dropbear_key_size: "${service_base_args_app_dropbear_key_size}"
     logging:
       driver: "${general_logging_driver}"
+    ports:
+      - "${service_base_networking_port_int1}"
     working_dir: "${general_working_dir}"
     command: "${service_base_command}"
 
@@ -55,6 +61,8 @@ services:
       dockerfile: "${service_devel_dockerfile}"
     logging:
       driver: "${general_logging_driver}"
+    ports:
+      - "${service_devel_networking_port_int1}"
     working_dir: "${general_working_dir}"
     command: "${service_devel_command}"
 
