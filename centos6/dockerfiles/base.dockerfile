@@ -54,7 +54,7 @@ ENV TERM="linux"
 #  - bash: for bash, the GNU Bash shell
 #  - glibc-common: to provide common files for locale support
 #  - tzdata: to provide time zone and daylight-saving time data
-#  - pwgen: for pwgen, the automatic password generation tool
+#  - mailcap: to provide mime support
 # Install daemon and utilities packages
 #  - supervisor: for supervisord, to launch and manage processes
 #  - dropbear: for dropbear, a lightweight SSH2 server and client that replaces OpenSSH
@@ -63,17 +63,20 @@ ENV TERM="linux"
 #  - rsyslog: for rsyslogd, the rocket-fast system for log processing
 #  - logrotate: for logrotate, the log rotation utility
 # Install administration packages
+#  - pwgen: for pwgen, the automatic password generation tool
 #  - which: for which, basic administration packages
 #  - procps: for kill, top and others, basic administration packages
 #  - htop: for htop, an interactive process viewer
 #  - iotop: for iotop, a simple top-like I/O monitor
 #  - iftop: for iftop, a simple top-like network monitor
 # Install programming packages
+#  - bc: for bc, the GNU bc arbitrary precision calculator language
 #  - sed: for sed, the GNU stream editor
 #  - mawk: for awk, a faster interpreter for the AWK Programming Language
 #  - perl: for perl, an interpreter for the Perl Programming languange
 #  - python: for python, an interpreter for the Python Programming languange
 # Install find and revision control packages
+#  - file: for file. retrieves information about files
 #  - grep: for grep/egrep/fgrep, the GNU utilities to search text in files
 #  - tree: for tree, displays directory tree, in color
 #  - findutils: for find, the file search utility
@@ -104,7 +107,6 @@ ENV TERM="linux"
 #  - kernel-firmware: for kernel firmware. kernel is not installed and not required
 #  - kbd-misc: for console fonts, keymaps etc. kbd-misc is not helpful without kbd
 #  - dash: for dash shell. bash shell is installed and dash was removed in CentOS 7
-#  - file for file. retrieves information about files
 #  - vim-minimal: for vim editor. nano editor is installed
 RUN printf "# Install the Package Manager related packages...\n"; \
     yum makecache && yum install -y \
@@ -118,11 +120,11 @@ RUN printf "# Install the Package Manager related packages...\n"; \
     gpg --refresh-keys; \
     printf "# Install the required packages...\n"; \
     yum makecache && yum install -y \
-      bash tzdata pwgen \
+      bash tzdata mailcap \
       supervisor dropbear cronie cronie-anacron rsyslog logrotate \
-      which procps htop iotop iftop \
-      sed mawk perl python \
-      grep tree findutils diffutils \
+      pwgen which procps htop iotop iftop \
+      bc sed mawk perl python \
+      file grep tree findutils diffutils \
       tar gzip bzip2 zip unzip xz \
       iproute iputils traceroute bind-utils nc \
       wget curl rsync \
@@ -130,7 +132,7 @@ RUN printf "# Install the Package Manager related packages...\n"; \
     printf "# Remove the superfluous packages...\n"; \
     yum remove -y \
       kernel-firmware kbd-misc \
-      dash file vim-minimal; \
+      dash vim-minimal; \
     package-cleanup -q --leaves --exclude-bin | xargs -l1 yum remove -y; \
     printf "# Cleanup the Package Manager...\n"; \
     yum clean all && rm -Rf /var/lib/yum/*;

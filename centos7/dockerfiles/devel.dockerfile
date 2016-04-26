@@ -29,7 +29,6 @@ MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 #  - patch: for patch, the pach creator and applier tool
 #  - git: for git, the Git distributed revision control system client
 # Install parser packages
-#  - bc: for bc, the GNU bc arbitrary precision calculator language
 #  - bison: for bison, a YACC-compatible parser generator
 #  - m4: for m4, the GNU m4 which is an interpreter for a macro processing language
 #  - re2c: for r2ec, a tool for generating fast C-based recognizers
@@ -57,7 +56,7 @@ MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 RUN printf "# Install the required packages...\n"; \
     yum makecache && yum install -y \
       patch git \
-      bc bison m4 re2c \
+      bison m4 re2c \
       autoconf automake make pkgconfig \
       cpp gcc gcc-c++ \
       kernel-headers glibc-headers pcre-devel \

@@ -64,7 +64,7 @@ APT::Install-Suggests "\""false"\"";\n\
 #  - bash: for bash, the GNU Bash shell
 #  - locales: to provide common files for locale support
 #  - tzdata: to provide time zone and daylight-saving time data
-#  - pwgen: for pwgen, the automatic password generation tool
+#  - mime-support: to provide mime support
 # Install daemon and utilities packages
 #  - supervisor: for supervisord, to launch and manage processes
 #  - dropbear: for dropbear, a lightweight SSH2 server and client that replaces OpenSSH
@@ -73,17 +73,20 @@ APT::Install-Suggests "\""false"\"";\n\
 #  - rsyslog: for rsyslogd, the rocket-fast system for log processing
 #  - logrotate: for logrotate, the log rotation utility
 # Install administration packages
+#  - pwgen: for pwgen, the automatic password generation tool
 #  - debianutils: for which and others, basic administration packages
 #  - procps: for kill, top and others, basic administration packages
 #  - htop: for htop, an interactive process viewer
 #  - iotop: for iotop, a simple top-like I/O monitor
 #  - iftop: for iftop, a simple top-like network monitor
 # Install programming packages
+#  - bc: for bc, the GNU bc arbitrary precision calculator language
 #  - sed: for sed, the GNU stream editor
 #  - mawk: for awk, a faster interpreter for the AWK Programming Language
 #  - perl-base: for perl, an interpreter for the Perl Programming languange
 #  - python-minimal: for python, an interpreter for the Python Programming languange
 # Install find and revision control packages
+#  - file: for file. retrieves information about files
 #  - grep: for grep/egrep/fgrep, the GNU utilities to search text in files
 #  - tree: for tree, displays directory tree, in color
 #  - findutils: for find, the file search utility
@@ -120,11 +123,11 @@ RUN printf "# Install the Package Manager related packages...\n"; \
     gpg --refresh-keys; \
     printf "# Install the required packages...\n"; \
     apt-get update && apt-get install -qy \
-      bash locales tzdata pwgen \
+      bash locales tzdata mime-support \
       supervisor dropbear cron anacron rsyslog logrotate \
-      debianutils procps htop iotop iftop \
-      sed mawk perl-base python-minimal \
-      grep tree findutils diffutils \
+      pwgen debianutils procps htop iotop iftop \
+      bc sed mawk perl-base python-minimal \
+      file grep tree findutils diffutils \
       tar gzip bzip2 zip unzip xz-utils \
       iproute2 iputils-ping iputils-tracepath dnsutils netcat-openbsd \
       wget curl rsync \
