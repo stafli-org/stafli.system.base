@@ -37,16 +37,34 @@ services:
     build:
       context: "${general_context}"
       dockerfile: "${service_minimal_dockerfile}"
+    logging:
+      driver: "${general_logging_driver}"
+    working_dir: "${general_working_dir}"
+    command: "${service_minimal_command}"
+
+  standard:
+    labels:
+      - "${service_standard_label_url}.description=${service_standard_description}"
+      - "${service_standard_label_url}.vendor=${project_vendor}"
+      - "${service_standard_label_url}.license=${project_license}"
+      - "${service_standard_label_url}.architecture=${project_architecture}"
+      - "${service_standard_label_url}.version=${project_version}"
+    image: "${service_standard_image_url}"
+    build:
+      context: "${general_context}"
+      dockerfile: "${service_standard_dockerfile}"
       args:
-        app_dropbear_listen_addr: "${service_minimal_args_app_dropbear_listen_addr}"
-        app_dropbear_listen_port: "${service_minimal_args_app_dropbear_listen_port}"
-        app_dropbear_key_size: "${service_minimal_args_app_dropbear_key_size}"
+        app_dropbear_listen_addr: "${service_standard_args_app_dropbear_listen_addr}"
+        app_dropbear_listen_port: "${service_standard_args_app_dropbear_listen_port}"
+        app_dropbear_key_size: "${service_standard_args_app_dropbear_key_size}"
+    depends_on:
+      - minimal
     logging:
       driver: "${general_logging_driver}"
     ports:
-      - "${service_minimal_networking_port_int1}"
+      - "${service_standard_networking_port_int1}"
     working_dir: "${general_working_dir}"
-    command: "${service_minimal_command}"
+    command: "${service_standard_command}"
 
   devel:
     labels:
@@ -59,6 +77,8 @@ services:
     build:
       context: "${general_context}"
       dockerfile: "${service_devel_dockerfile}"
+    depends_on:
+      - standard
     logging:
       driver: "${general_logging_driver}"
     ports:

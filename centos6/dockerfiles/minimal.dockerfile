@@ -22,14 +22,6 @@ FROM centos:centos6
 MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 
 #
-# Arguments
-#
-
-ARG app_dropbear_listen_addr="0.0.0.0"
-ARG app_dropbear_listen_port="22"
-ARG app_dropbear_key_size="4096"
-
-#
 # Environment
 #
 
@@ -55,13 +47,6 @@ ENV TERM="linux"
 #  - glibc-common: to provide common files for locale support
 #  - tzdata: to provide time zone and daylight-saving time data
 #  - mailcap: to provide mime support
-# Install daemon and utilities packages
-#  - supervisor: for supervisord, to launch and manage processes
-#  - dropbear: for dropbear, a lightweight SSH2 server and client that replaces OpenSSH
-#  - cronie: for crond, the process scheduling daemon
-#  - cronie-anacron: for anacron, the cron-like program that doesn't go by time
-#  - rsyslog: for rsyslogd, the rocket-fast system for log processing
-#  - logrotate: for logrotate, the log rotation utility
 # Install administration packages
 #  - pwgen: for pwgen, the automatic password generation tool
 #  - which: for which, basic administration packages
@@ -121,7 +106,6 @@ RUN printf "# Install the Package Manager related packages...\n"; \
     printf "# Install the required packages...\n"; \
     yum makecache && yum install -y \
       bash tzdata mailcap \
-      supervisor dropbear cronie cronie-anacron rsyslog logrotate \
       pwgen which procps htop iotop iftop \
       bc sed mawk perl python \
       file grep tree findutils diffutils \
@@ -156,144 +140,4 @@ RUN printf "Configure root account...\n"; \
     rm -Rf /usr/lib/locale/tmp;
 ENV TZ="Etc/UTC" \
     LANGUAGE="en_US.UTF-8" LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8"
-
-# Supervisor
-RUN printf "Updading Supervisor configuration...\n"; \
-    mkdir -p /var/log/supervisor; \
-    \
-    # ignoring /etc/sysconfig/supervisor \
-    \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file}; \
-    # includes available only on v3.x+ \
-    printf "Done patching ${file}...\n"; \
-    \
-    # init is not working at this point \
-    \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# rclocal\n\
-[program:rclocal]\n\
-command=/bin/bash -c \"/etc/rc.local\"\n\
-autostart=true\n\
-autorestart=false\n\
-startsecs=0\n\
-\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # /etc/rc.local \
-    file="/etc/rc.local"; \
-    touch ${file} && chown root ${file} && chmod 755 ${file};
-
-# Rsyslogd
-RUN printf "Updading Rsyslog configuration...\n"; \
-    \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# rsyslogd\n\
-[program:rsyslogd]\n\
-command=/bin/bash -c \"\$(which rsyslogd) -f /etc/rsyslog.conf -c5 -n\"\n\
-autostart=true\n\
-autorestart=true\n\
-\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # ignoring /etc/sysconfig/rsyslog \
-    \
-    # /etc/rsyslog.conf \
-    file="/etc/rsyslog.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    # Disable kernel logging \
-    perl -0p -i -e "s>\\$\\ModLoad imklog>#\\$\\ModLoad imklog>" ${file}; \
-    printf "Done patching ${file}...\n";
-
-# Cron
-RUN printf "Updading Cron configuration...\n"; \
-    \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# crond\n\
-[program:crond]\n\
-command=/bin/bash -c \"\$(which crond) -n\"\n\
-autostart=true\n\
-autorestart=true\n\
-\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # ignoring /etc/sysconfig/crond \
-    touch /etc/crontab;
-
-# Dropbear
-RUN printf "Updading Dropbear configuration...\n"; \
-    \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# dropbear\n\
-[program:dropbear]\n\
-command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/dropbear/dropbear.conf) && exec \$(which dropbear) \$opts -F\"\n\
-autostart=true\n\
-autorestart=true\n\
-\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # ignoring /etc/sysconfig/dropbear \
-    \
-    # /etc/dropbear/dropbear.conf \
-    file="/etc/dropbear/dropbear.conf"; \
-    # clear old file
-    printf "#\n# dropbear.conf\n#\n" > ${file}; \
-    # disable daemon/run in foreground \
-    printf "\n# Run in foreground mode\n#-F\n" >> ${file}; \
-    # change interface and port \
-    printf "\n# Listen on specified address and port (Default: 0.0.0.0:22)\n-p ${app_dropbear_listen_addr}:${app_dropbear_listen_port}\n" >> ${file}; \
-    # change ssh keys \
-    printf "\n# Use the following ssh keys:\n-r /etc/dropbear/dropbear_rsa_host_key\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # Remove persistent ssh keys \
-    printf "\n# Removing persistent ssh keys...\n"; \
-    rm -f /etc/dropbear/*host_key; \
-    \
-    # /etc/rc.local \
-    file="/etc/rc.local"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    perl -0p -i -e "s>\nexit 0>\n# exit 0\n>" ${file}; \
-    printf "\n\
-# Recreate dropbear private keys\n\
-# https://github.com/simonswine/docker-dropbear/blob/master/run.sh\n\
-CONF_DIR=\"/etc/dropbear\";\n\
-SSH_KEY_RSA=\"\${CONF_DIR}/dropbear_rsa_host_key\";\n\
-SSH_KEY_DSS=\"\${CONF_DIR}/dropbear_dss_host_key\";\n\
-SSH_KEY_ECDSA=\"\${CONF_DIR}/dropbear_ecdsa_host_key\";\n\
-\n\
-# Check if conf dir exists\n\
-if [ ! -d \${CONF_DIR} ]; then\n\
-    mkdir -p \${CONF_DIR};\n\
-fi;\n\
-chown root:root \${CONF_DIR};\n\
-chmod 755 \${CONF_DIR};\n\
-\n\
-# Check if keys exists\n\
-if [ ! -f \${SSH_KEY_DSS} ]; then\n\
-    rm -f \${SSH_KEY_DSS};\n\
-fi;\n\
-if [ ! -f \${SSH_KEY_ECDSA} ]; then\n\
-    rm -f \${SSH_KEY_ECDSA};\n\
-fi;\n\
-\n\
-# Generate only the RSA key
-if [ ! -f \${SSH_KEY_RSA} ]; then\n\
-    dropbearkey -t rsa -f \${SSH_KEY_RSA} -s ${app_dropbear_key_size};\n\
-fi;\n\
-chown root:root \${SSH_KEY_RSA};\n\
-chmod 600 \${SSH_KEY_RSA};\n\
-\n\
-exit 0\n" >> ${file}; \
-    printf "Done patching ${file}...\n";
 

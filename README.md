@@ -22,7 +22,8 @@ The profiles use the official images as a starting point:
 ## Profiles
 These are the profiles described by the dockerfiles:
 - Minimal, built with common software
-- Devel, built with additional development packages
+- Standard, built on Minimal profile and included daemon packages
+- Devel, built on Standard profile and additional development packages
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/solict/general-purpose-system-distro/tags/) upon building:
@@ -31,6 +32,11 @@ These are the [resulting images](https://hub.docker.com/r/solict/general-purpose
   - solict/general-purpose-system-distro:debian7_minimal
   - solict/general-purpose-system-distro:centos7_minimal
   - solict/general-purpose-system-distro:centos6_minimal
+- Standard profile:
+  - solict/general-purpose-system-distro:debian8_standard
+  - solict/general-purpose-system-distro:debian7_standard
+  - solict/general-purpose-system-distro:centos7_standard
+  - solict/general-purpose-system-distro:centos6_standard
 - Devel profile:
   - solict/general-purpose-system-distro:debian8_devel
   - solict/general-purpose-system-distro:debian7_devel
@@ -44,6 +50,11 @@ These containers are generated upon issuing a create:
   - debian7_minimal_xxx
   - centos7_minimal_xxx
   - centos6_minimal_xxx
+- Standard profile:
+  - debian8_standard_xxx
+  - debian7_standard_xxx
+  - centos7_standard_xxx
+  - centos6_standard_xxx
 - Devel profile:
   - debian8_devel_xxx
   - debian7_devel_xxx
