@@ -1,6 +1,6 @@
 
 #
-#    Debian 7 (wheezy) base profile (dockerfile)
+#    Debian 7 (wheezy) minimal profile (dockerfile)
 #    Copyright (C) 2016 SOL-ICT
 #    This file is part of the Docker General Purpose System Distro.
 #

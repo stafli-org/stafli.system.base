@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    Debian 8 (jessie) base profile (shell)
+#    Debian 8 (jessie) minimal profile (shell)
 #    Copyright (C) 2016 SOL-ICT
 #    This file is part of the Docker General Purpose System Distro.
 #
@@ -34,7 +34,7 @@ export DEBIAN_FRONTEND=\"noninteractive\";\n\
 source /etc/environment;
 
 # Load dockerfile
-source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
+source "$(dirname $(readlink -f $0))/../dockerfiles/minimal.dockerfile";
 
 # Configure timezone and locales
 printf "\

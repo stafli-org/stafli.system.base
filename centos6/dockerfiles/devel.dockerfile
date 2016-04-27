@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-FROM solict/general-purpose-system-distro:centos6_base
+FROM solict/general-purpose-system-distro:centos6_minimal
 MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 
 #

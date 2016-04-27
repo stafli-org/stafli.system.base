@@ -26,27 +26,27 @@ version: '2'
 #
 services:
 
-  base:
+  minimal:
     labels:
-      - "${service_base_label_url}.description=${service_base_description}"
-      - "${service_base_label_url}.vendor=${project_vendor}"
-      - "${service_base_label_url}.license=${project_license}"
-      - "${service_base_label_url}.architecture=${project_architecture}"
-      - "${service_base_label_url}.version=${project_version}"
-    image: "${service_base_image_url}"
+      - "${service_minimal_label_url}.description=${service_minimal_description}"
+      - "${service_minimal_label_url}.vendor=${project_vendor}"
+      - "${service_minimal_label_url}.license=${project_license}"
+      - "${service_minimal_label_url}.architecture=${project_architecture}"
+      - "${service_minimal_label_url}.version=${project_version}"
+    image: "${service_minimal_image_url}"
     build:
       context: "${general_context}"
-      dockerfile: "${service_base_dockerfile}"
+      dockerfile: "${service_minimal_dockerfile}"
       args:
-        app_dropbear_listen_addr: "${service_base_args_app_dropbear_listen_addr}"
-        app_dropbear_listen_port: "${service_base_args_app_dropbear_listen_port}"
-        app_dropbear_key_size: "${service_base_args_app_dropbear_key_size}"
+        app_dropbear_listen_addr: "${service_minimal_args_app_dropbear_listen_addr}"
+        app_dropbear_listen_port: "${service_minimal_args_app_dropbear_listen_port}"
+        app_dropbear_key_size: "${service_minimal_args_app_dropbear_key_size}"
     logging:
       driver: "${general_logging_driver}"
     ports:
-      - "${service_base_networking_port_int1}"
+      - "${service_minimal_networking_port_int1}"
     working_dir: "${general_working_dir}"
-    command: "${service_base_command}"
+    command: "${service_minimal_command}"
 
   devel:
     labels:

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    CentOS 6 (centos6) base profile (shell)
+#    CentOS 6 (centos6) minimal profile (shell)
 #    Copyright (C) 2016 SOL-ICT
 #    This file is part of the Docker General Purpose System Distro.
 #
@@ -33,7 +33,7 @@ export TERM=\"linux\";\n\
 source /etc/environment;
 
 # Load dockerfile
-source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
+source "$(dirname $(readlink -f $0))/../dockerfiles/minimal.dockerfile";
 
 # Configure timezone and locales
 printf "\

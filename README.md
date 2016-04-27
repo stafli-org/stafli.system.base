@@ -21,16 +21,16 @@ The profiles use the official images as a starting point:
 
 ## Profiles
 These are the profiles described by the dockerfiles:
-- Base, built with common software
+- Minimal, built with common software
 - Devel, built with additional development packages
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/solict/general-purpose-system-distro/tags/) upon building:
-- Base profile:
-  - solict/general-purpose-system-distro:debian8_base
-  - solict/general-purpose-system-distro:debian7_base
-  - solict/general-purpose-system-distro:centos7_base
-  - solict/general-purpose-system-distro:centos6_base
+- Minimal profile:
+  - solict/general-purpose-system-distro:debian8_minimal
+  - solict/general-purpose-system-distro:debian7_minimal
+  - solict/general-purpose-system-distro:centos7_minimal
+  - solict/general-purpose-system-distro:centos6_minimal
 - Devel profile:
   - solict/general-purpose-system-distro:debian8_devel
   - solict/general-purpose-system-distro:debian7_devel
@@ -39,11 +39,11 @@ These are the [resulting images](https://hub.docker.com/r/solict/general-purpose
 
 ## Containers
 These containers are generated upon issuing a create:
-- Base profile:
-  - debian8_base_xxx
-  - debian7_base_xxx
-  - centos7_base_xxx
-  - centos6_base_xxx
+- Minimal profile:
+  - debian8_minimal_xxx
+  - debian7_minimal_xxx
+  - centos7_minimal_xxx
+  - centos6_minimal_xxx
 - Devel profile:
   - debian8_devel_xxx
   - debian7_devel_xxx
@@ -65,8 +65,8 @@ Where <image_url> is the full image url (lookup the image list above).
 
 Examples:
 ```
-docker pull solict/general-purpose-system-distro:debian7_base
-docker run -ti solict/general-purpose-system-distro:debian7_base /bin/bash
+docker pull solict/general-purpose-system-distro:debian7_minimal
+docker run -ti solict/general-purpose-system-distro:debian7_minimal /bin/bash
 ```
 
 ### From GitHub repository (advanced)
