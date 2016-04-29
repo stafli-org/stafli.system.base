@@ -44,7 +44,6 @@ ENV TERM="linux"
 #  - epel-release: for Extra Packages for Enterprise Linux (EPEL)
 # Install base packages
 #  - bash: for bash, the GNU Bash shell
-#  - glibc-common: to provide common files for locale support
 #  - tzdata: to provide time zone and daylight-saving time data
 #  - mailcap: to provide mime support
 # Install administration packages
@@ -88,22 +87,24 @@ ENV TERM="linux"
 #  - dialog: for dialog, to provide prompts for the bash shell
 #  - screen: for screen, the terminal multiplexer with VT100/ANSI terminal emulation
 #  - nano: for nano, a tiny editor based on pico
+# Reinstall and clean locale archives
+#  - glibc-common: to provide common files for locale support
 # Removed superfluous packages
 #  - kernel-firmware: for kernel firmware. kernel is not installed and not required
 #  - kbd-misc: for console fonts, keymaps etc. kbd-misc is not helpful without kbd
 #  - dash: for dash shell. bash shell is installed and dash was removed in CentOS 7
 #  - vim-minimal: for vim editor. nano editor is installed
-RUN printf "# Install the Package Manager related packages...\n"; \
+RUN printf "# Install the Package Manager related packages...\n" && \
     yum makecache && yum install -y \
       openssl ca-certificates \
       yum-utils yum-plugin-priorities \
       yum-plugin-fastestmirror yum-plugin-keys \
-      gnupg; \
-    printf "# Install the repositories and refresh the GPG keys...\n"; \
+      gnupg && \
+    printf "# Install the repositories and refresh the GPG keys...\n" && \
     yum makecache && yum install -y \
-      epel-release; \
-    gpg --refresh-keys; \
-    printf "# Install the required packages...\n"; \
+      epel-release && \
+    gpg --refresh-keys && \
+    printf "# Install the required packages...\n" && \
     yum makecache && yum install -y \
       bash tzdata mailcap \
       pwgen which procps htop iotop iftop \
@@ -112,13 +113,18 @@ RUN printf "# Install the Package Manager related packages...\n"; \
       tar gzip bzip2 zip unzip xz \
       iproute iputils traceroute bind-utils nc \
       wget curl rsync \
-      bash-completion dialog screen nano; \
-    printf "# Remove the superfluous packages...\n"; \
+      bash-completion dialog screen nano && \
+    printf "# Reinstall and clean locale archives...\n" && \
+    yum makecache && yum reinstall -y glibc-common && \
+    localedef --list-archive | grep -v -i ^en | xargs localedef --delete-from-archive && \
+    mv -f /usr/lib/locale/locale-archive /usr/lib/locale/locale-archive.tmpl && \
+    build-locale-archive && rm -Rf /usr/lib/locale/tmp && \
+    printf "# Remove the superfluous packages...\n" && \
     yum remove -y \
       kernel-firmware kbd-misc \
-      dash vim-minimal; \
-    package-cleanup -q --leaves --exclude-bin | xargs -l1 yum remove -y; \
-    printf "# Cleanup the Package Manager...\n"; \
+      dash vim-minimal && \
+    package-cleanup -q --leaves --exclude-bin | xargs -l1 yum remove -y && \
+    printf "# Cleanup the Package Manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/*;
 
 #
@@ -130,14 +136,8 @@ RUN printf "Configure root account...\n"; \
     cp -R /etc/skel/. /root; \
     printf "Configure timezone...\n"; \
     echo "Etc/UTC" > /etc/timezone; \
-    printf "Configure locales...\n"; \
-    yum makecache && yum reinstall -y glibc-common; \
-    yum clean all && rm -Rf /var/lib/yum/*; \
-    localedef --list-archive | grep -v -i ^en | xargs localedef --delete-from-archive; \
-    mv /usr/lib/locale/locale-archive /usr/lib/locale/locale-archive.tmpl; \
-    build-locale-archive; \
-    localedef -v -c -i en_US -f UTF-8 en_US.UTF-8; \
-    rm -Rf /usr/lib/locale/tmp;
+    printf "Configure locales...\n" && \
+    localedef -c -i en_US -f UTF-8 en_US.UTF-8;
 ENV TZ="Etc/UTC" \
     LANGUAGE="en_US.UTF-8" LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8"
 

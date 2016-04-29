@@ -98,15 +98,15 @@ APT::Install-Suggests "\""false"\"";\n\
 #  - dialog: for dialog, to provide prompts for the bash shell
 #  - screen: for screen, the terminal multiplexer with VT100/ANSI terminal emulation
 #  - nano: for nano, a tiny editor based on pico
-RUN printf "# Install the Package Manager related packages...\n"; \
+RUN printf "# Install the Package Manager related packages...\n" && \
     apt-key update && \
     apt-get update && apt-get install -qy \
       openssl ca-certificates \
       apt-utils apt-transport-https \
-      gnupg gnupg-curl gpgv; \
-    printf "# Install the repositories and refresh the GPG keys...\n"; \
-    gpg --refresh-keys; \
-    printf "# Install the required packages...\n"; \
+      gnupg gnupg-curl gpgv && \
+    printf "# Install the repositories and refresh the GPG keys...\n" && \
+    gpg --refresh-keys && \
+    printf "# Install the required packages...\n" && \
     apt-get update && apt-get install -qy \
       bash locales tzdata mime-support \
       pwgen debianutils procps htop iotop iftop \
@@ -115,10 +115,10 @@ RUN printf "# Install the Package Manager related packages...\n"; \
       tar gzip bzip2 zip unzip xz-utils \
       iproute2 iputils-ping iputils-tracepath dnsutils netcat-openbsd \
       wget curl rsync \
-      bash-completion dialog screen nano; \
-    printf "# Remove the superfluous packages...\n"; \
-    apt-get autoremove --purge; \
-    printf "# Cleanup the Package Manager...\n"; \
+      bash-completion dialog screen nano && \
+    printf "# Remove the superfluous packages...\n" && \
+    apt-get autoremove --purge && \
+    printf "# Cleanup the Package Manager...\n" && \
     apt-get clean && rm -rf /var/lib/apt/lists/*;
 
 #
@@ -130,7 +130,7 @@ RUN printf "Configure root account...\n"; \
     cp -R /etc/skel/. /root; \
     printf "Configure timezone...\n"; \
     echo "Etc/UTC" > /etc/timezone; \
-    printf "Configure locales...\n"; \
+    printf "Configure locales...\n" && \
     sed -i "s># en_US.UTF-8 UTF-8>en_US.UTF-8 UTF-8>" /etc/locale.gen && \
     locale-gen;
 ENV TZ="Etc/UTC" \

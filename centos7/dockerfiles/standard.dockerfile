@@ -40,12 +40,12 @@ ARG app_dropbear_key_size="4096"
 #  - cronie-anacron: for anacron, the cron-like program that doesn't go by time
 #  - rsyslog: for rsyslogd, the rocket-fast system for log processing
 #  - logrotate: for logrotate, the log rotation utility
-RUN printf "# Install the required packages...\n"; \
+RUN printf "# Install the required packages...\n" && \
     yum makecache && yum install -y \
       supervisor dropbear \
       cronie cronie-anacron \
-      rsyslog logrotate; \
-    printf "# Cleanup the Package Manager...\n"; \
+      rsyslog logrotate && \
+    printf "# Cleanup the Package Manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/*;
 
 #

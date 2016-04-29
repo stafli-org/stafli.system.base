@@ -53,7 +53,7 @@ MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 #  - libkrb5-dev: the MIT Kerberos library - development files
 #  - libxml2-dev: the GNOME XML library - development files
 #  - zlib1g-dev:  the ZLib library - development files
-RUN printf "# Install the required packages...\n"; \
+RUN printf "# Install the required packages...\n" && \
     apt-get update && apt-get install -qy \
       patch git \
       bison m4 re2c \
@@ -62,7 +62,7 @@ RUN printf "# Install the required packages...\n"; \
       linux-libc-dev libc6-dev libpcre3-dev \
       libssl-dev libgnutls28-dev libcurl4-openssl-dev \
       libsasl2-dev libldap2-dev libkrb5-dev \
-      libxml2-dev zlib1g-dev; \
-    printf "# Cleanup the Package Manager...\n"; \
+      libxml2-dev zlib1g-dev && \
+    printf "# Cleanup the Package Manager...\n" && \
     apt-get clean && rm -rf /var/lib/apt/lists/*;
 
