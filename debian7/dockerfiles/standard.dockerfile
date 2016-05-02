@@ -66,6 +66,8 @@ RUN printf "Updading Supervisor configuration...\n"; \
     file="/etc/supervisor/supervisord.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     perl -0p -i -e "s>\[supervisord\]\nlogfile>\[supervisord\]\nnodaemon=true\nlogfile>" ${file}; \
+    perl -0p -i -e "s>\[unix_http_server\]\nfile=.*>\[unix_http_server\]\nfile=/dev/shm/supervisor.sock>" ${file}; \
+    perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     # /etc/supervisor/conf.d/init.conf \

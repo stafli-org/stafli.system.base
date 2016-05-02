@@ -67,6 +67,8 @@ RUN printf "Updading Supervisor configuration...\n"; \
     file="/etc/supervisord.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file}; \
+    perl -0p -i -e "s>\[unix_http_server\]\nhttp_port=.*>\[unix_http_server\]\nhttp_port=/dev/shm/supervisor.sock>" ${file}; \
+    perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file}; \
     # includes available only on v3.x+ \
     printf "Done patching ${file}...\n"; \
     \
