@@ -71,7 +71,7 @@ ENV TERM="linux"
 #  - bzip2: for bzip2, a compression utility, which uses the Burrows–Wheeler algorithm
 #  - zip: for zip, the InfoZip compression utility which uses various ZIP algorithms
 #  - unzip: for unzip, the InfoZip decompression utility which uses various ZIP algorithms
-#  - xz-utils: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
+#  - xz: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
 # Install network diagnosis packages
 #  - iproute: for ip and others, the newer tools for routing and network configuration
 #  - iputils: for ping/6, tools to test the reachability of network hosts
