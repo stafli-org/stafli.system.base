@@ -141,5 +141,6 @@ ENV TZ="Etc/UTC" \
 # Disable SELinux
 RUN printf "Disable SELinux (permissive)...\n"; \
     setenforce Permissive; \
+    if [ ! -f /etc/selinux/config ]; then mkdir -p /etc/selinux; touch /etc/selinux/config; printf "\nSELINUX=\n" > /etc/selinux/config; fi; \
     perl -0p -i -e "s>\nSELINUX=.*>\nSELINUX=permissive>" /etc/selinux/config;
 
