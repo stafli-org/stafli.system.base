@@ -26,22 +26,27 @@ alias ARG='export';
 alias RUN='';
 shopt -s expand_aliases;
 
-# Suppress warnings about the terminal
-printf "\
-export TERM=\"linux\";\n\
-export DEBIAN_FRONTEND=\"noninteractive\";\n\
-" >> /etc/environment;
-source /etc/environment;
-
 # Load dockerfile
 source "$(dirname $(readlink -f $0))/../dockerfiles/standard.dockerfile";
 
-# Configure timezone and locales
-printf "\
-export TZ=\"Etc/UTC\";\n\
-export LANGUAGE=\"en_US.UTF-8\";\n\
-export LANG=\"en_US.UTF-8\";\n\
-export LC_ALL=\"en_US.UTF-8\";\n\
-" >> /etc/environment;
-source /etc/environment;
+#
+# Cleanup
+#
+
+# Remove dupplicated services
+apt-get remove --purge -y dropbear supervisor;
+
+#
+# Configuration
+#
+
+# Enable daemon
+update-rc.d rsyslog enable;
+update-rc.d cron enable;
+update-rc.d sshd enable;
+
+# Start daemon
+service rsyslog restart;
+service cron restart;
+service sshd restart;
 

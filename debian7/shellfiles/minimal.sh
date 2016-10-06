@@ -28,8 +28,8 @@ shopt -s expand_aliases;
 
 # Suppress warnings about the terminal
 printf "\
-export TERM=\"linux\";\n\
-export DEBIAN_FRONTEND=\"noninteractive\";\n\
+TERM=\"linux\"\n\
+DEBIAN_FRONTEND=\"noninteractive\"\n\
 " >> /etc/environment;
 source /etc/environment;
 
@@ -38,10 +38,10 @@ source "$(dirname $(readlink -f $0))/../dockerfiles/minimal.dockerfile";
 
 # Configure timezone and locales
 printf "\
-export TZ=\"Etc/UTC\";\n\
-export LANGUAGE=\"en_US.UTF-8\";\n\
-export LANG=\"en_US.UTF-8\";\n\
-export LC_ALL=\"en_US.UTF-8\";\n\
+TZ=\"Etc/UTC\"\n\
+LANGUAGE=\"en_US.UTF-8\"\n\
+LANG=\"en_US.UTF-8\"\n\
+LC_ALL=\"en_US.UTF-8\"\n\
 " >> /etc/environment;
 source /etc/environment;
 
