@@ -138,3 +138,8 @@ RUN printf "Configure root account...\n"; \
 ENV TZ="Etc/UTC" \
     LANGUAGE="en_US.UTF-8" LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8"
 
+# Disable SELinux
+RUN printf "Disable SELinux (permissive)...\n"; \
+    setenforce Permissive; \
+    perl -0p -i -e "s>\nSELINUX=.*>\nSELINUX=permissive>" /etc/selinux/config;
+
