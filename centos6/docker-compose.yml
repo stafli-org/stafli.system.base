@@ -28,7 +28,7 @@ services:
 
   minimal:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.centos6_minimal.description=General Purpose System Distro - Minimal profile, based on CentOS 6 (centos6)"
+      - "org.sol-ict.general.purpose.system.distro.centos6_minimal.description=General Purpose System Distro - Minimal service, based on CentOS 6 (centos6)"
       - "org.sol-ict.general.purpose.system.distro.centos6_minimal.vendor=SOL-ICT"
       - "org.sol-ict.general.purpose.system.distro.centos6_minimal.license=GPLv3"
       - "org.sol-ict.general.purpose.system.distro.centos6_minimal.architecture=amd64"
@@ -49,7 +49,7 @@ services:
 
   standard:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.centos6_standard.description=General Purpose System Distro - Standard profile, based on Minimal"
+      - "org.sol-ict.general.purpose.system.distro.centos6_standard.description=General Purpose System Distro - Standard service, based on Minimal service"
       - "org.sol-ict.general.purpose.system.distro.centos6_standard.vendor=SOL-ICT"
       - "org.sol-ict.general.purpose.system.distro.centos6_standard.license=GPLv3"
       - "org.sol-ict.general.purpose.system.distro.centos6_standard.architecture=amd64"
@@ -73,7 +73,7 @@ services:
 
   devel:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.centos6_devel.description=General Purpose System Distro - Devel profile, based on Development"
+      - "org.sol-ict.general.purpose.system.distro.centos6_devel.description=General Purpose System Distro - Devel service, based on Standard service"
       - "org.sol-ict.general.purpose.system.distro.centos6_devel.vendor=SOL-ICT"
       - "org.sol-ict.general.purpose.system.distro.centos6_devel.license=GPLv3"
       - "org.sol-ict.general.purpose.system.distro.centos6_devel.architecture=amd64"

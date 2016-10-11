@@ -28,7 +28,7 @@ services:
 
   minimal:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.debian7_minimal.description=General Purpose System Distro - Minimal profile, based on Debian 7 (wheezy)"
+      - "org.sol-ict.general.purpose.system.distro.debian7_minimal.description=General Purpose System Distro - Minimal service, based on Debian 7 (wheezy)"
       - "org.sol-ict.general.purpose.system.distro.debian7_minimal.vendor=SOL-ICT"
       - "org.sol-ict.general.purpose.system.distro.debian7_minimal.license=GPLv3"
       - "org.sol-ict.general.purpose.system.distro.debian7_minimal.architecture=amd64"
@@ -49,7 +49,7 @@ services:
 
   standard:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.debian7_standard.description=General Purpose System Distro - Standard profile, based on Minimal"
+      - "org.sol-ict.general.purpose.system.distro.debian7_standard.description=General Purpose System Distro - Standard service, based on Minimal service"
       - "org.sol-ict.general.purpose.system.distro.debian7_standard.vendor=SOL-ICT"
       - "org.sol-ict.general.purpose.system.distro.debian7_standard.license=GPLv3"
       - "org.sol-ict.general.purpose.system.distro.debian7_standard.architecture=amd64"
@@ -73,7 +73,7 @@ services:
 
   devel:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.debian7_devel.description=General Purpose System Distro - Devel profile, based on Development"
+      - "org.sol-ict.general.purpose.system.distro.debian7_devel.description=General Purpose System Distro - Devel service, based on Standard service"
       - "org.sol-ict.general.purpose.system.distro.debian7_devel.vendor=SOL-ICT"
       - "org.sol-ict.general.purpose.system.distro.debian7_devel.license=GPLv3"
       - "org.sol-ict.general.purpose.system.distro.debian7_devel.architecture=amd64"
