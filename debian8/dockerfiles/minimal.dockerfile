@@ -22,11 +22,20 @@ FROM debian:jessie
 MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 
 #
+# Arguments
+#
+
+ARG os_terminal="linux"
+ARG os_timezone="Etc/UTC"
+ARG os_locale="en_GB"
+ARG os_charset="UTF-8"
+
+#
 # Environment
 #
 
 # Suppress warnings about the terminal and frontend and avoid prompts
-ENV TERM="linux" \
+ENV TERM="${os_terminal}" \
     DEBIAN_FRONTEND="noninteractive"
 
 #
@@ -129,10 +138,10 @@ RUN printf "# Install the Package Manager related packages...\n" && \
 RUN printf "Configure root account...\n"; \
     cp -R /etc/skel/. /root; \
     printf "Configure timezone...\n"; \
-    echo "Etc/UTC" > /etc/timezone; \
+    echo "${os_timezone}" > /etc/timezone; \
     printf "Configure locales...\n" && \
-    sed -i "s># en_US.UTF-8 UTF-8>en_US.UTF-8 UTF-8>" /etc/locale.gen && \
+    sed -i "s># ${os_locale}.${os_charset} ${os_charset}>${os_locale}.${os_charset} ${os_charset}>" /etc/locale.gen && \
     locale-gen;
-ENV TZ="Etc/UTC" \
-    LANGUAGE="en_US.UTF-8" LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8"
+ENV TZ="${os_timezone}" \
+    LANGUAGE="${os_locale}.${os_charset}" LANG="${os_locale}.${os_charset}" LC_ALL="${os_locale}.${os_charset}"
 

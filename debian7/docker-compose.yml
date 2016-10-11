@@ -37,6 +37,11 @@ services:
     build:
       context: "./dockerfiles"
       dockerfile: "minimal.dockerfile"
+      args:
+        os_terminal: "linux"
+        os_timezone: "Etc/UTC"
+        os_locale: "en_GB"
+        os_charset: "UTF-8"
     logging:
       driver: "json-file"
     working_dir: "/tmp"

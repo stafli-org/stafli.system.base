@@ -22,11 +22,20 @@ FROM centos:centos7
 MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 
 #
+# Arguments
+#
+
+ARG os_terminal="linux"
+ARG os_timezone="Etc/UTC"
+ARG os_locale="en_GB"
+ARG os_charset="UTF-8"
+
+#
 # Environment
 #
 
 # Suppress warnings about the terminal
-ENV TERM="linux"
+ENV TERM="${os_terminal}"
 
 #
 # Packages
@@ -132,11 +141,11 @@ RUN printf "# Install the Package Manager related packages...\n" && \
 RUN printf "Configure root account...\n"; \
     cp -R /etc/skel/. /root; \
     printf "Configure timezone...\n"; \
-    echo "Etc/UTC" > /etc/timezone; \
+    echo "${os_timezone}" > /etc/timezone; \
     printf "Configure locales...\n" && \
-    localedef -c -i en_US -f UTF-8 en_US.UTF-8;
-ENV TZ="Etc/UTC" \
-    LANGUAGE="en_US.UTF-8" LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8"
+    localedef -c -i ${os_locale} -f ${os_charset} ${os_locale}.${os_charset};
+ENV TZ="${os_timezone}" \
+    LANGUAGE="${os_locale}.${os_charset}" LANG="${os_locale}.${os_charset}" LC_ALL="${os_locale}.${os_charset}"
 
 # Disable SELinux
 RUN printf "Disable SELinux (permissive)...\n"; \
