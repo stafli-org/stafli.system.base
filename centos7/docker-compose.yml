@@ -22,67 +22,67 @@
 version: '2'
 
 #
-# Services/profiles
+# Main services
 #
 services:
 
   minimal:
     labels:
-      - "${service_minimal_label_url}.description=${service_minimal_description}"
-      - "${service_minimal_label_url}.vendor=${project_vendor}"
-      - "${service_minimal_label_url}.license=${project_license}"
-      - "${service_minimal_label_url}.architecture=${project_architecture}"
-      - "${service_minimal_label_url}.version=${project_version}"
-    image: "${service_minimal_image_url}"
+      - "org.sol-ict.general.purpose.system.distro.centos7_minimal.description=General Purpose System Distro - Minimal profile, based on CentOS 7 (centos7)"
+      - "org.sol-ict.general.purpose.system.distro.centos7_minimal.vendor=SOL-ICT"
+      - "org.sol-ict.general.purpose.system.distro.centos7_minimal.license=GPLv3"
+      - "org.sol-ict.general.purpose.system.distro.centos7_minimal.architecture=amd64"
+      - "org.sol-ict.general.purpose.system.distro.centos7_minimal.version=1.0"
+    image: "solict/general-purpose-system-distro:centos7_minimal"
     build:
-      context: "${general_context}"
-      dockerfile: "${service_minimal_dockerfile}"
+      context: "./dockerfiles"
+      dockerfile: "minimal.dockerfile"
     logging:
-      driver: "${general_logging_driver}"
-    working_dir: "${general_working_dir}"
-    command: "${service_minimal_command}"
+      driver: "json-file"
+    working_dir: "/tmp"
+    command: "/bin/bash"
 
   standard:
     labels:
-      - "${service_standard_label_url}.description=${service_standard_description}"
-      - "${service_standard_label_url}.vendor=${project_vendor}"
-      - "${service_standard_label_url}.license=${project_license}"
-      - "${service_standard_label_url}.architecture=${project_architecture}"
-      - "${service_standard_label_url}.version=${project_version}"
-    image: "${service_standard_image_url}"
+      - "org.sol-ict.general.purpose.system.distro.centos7_standard.description=General Purpose System Distro - Standard profile, based on Minimal"
+      - "org.sol-ict.general.purpose.system.distro.centos7_standard.vendor=SOL-ICT"
+      - "org.sol-ict.general.purpose.system.distro.centos7_standard.license=GPLv3"
+      - "org.sol-ict.general.purpose.system.distro.centos7_standard.architecture=amd64"
+      - "org.sol-ict.general.purpose.system.distro.centos7_standard.version=1.0"
+    image: "solict/general-purpose-system-distro:centos7_standard"
     build:
-      context: "${general_context}"
-      dockerfile: "${service_standard_dockerfile}"
+      context: "./dockerfiles"
+      dockerfile: "standard.dockerfile"
       args:
-        app_dropbear_listen_addr: "${service_standard_args_app_dropbear_listen_addr}"
-        app_dropbear_listen_port: "${service_standard_args_app_dropbear_listen_port}"
-        app_dropbear_key_size: "${service_standard_args_app_dropbear_key_size}"
+        app_dropbear_listen_addr: "0.0.0.0"
+        app_dropbear_listen_port: "22"
+        app_dropbear_key_size: "4096"
     depends_on:
       - minimal
     logging:
-      driver: "${general_logging_driver}"
+      driver: "json-file"
     ports:
-      - "${service_standard_networking_port_int1}"
-    working_dir: "${general_working_dir}"
-    command: "${service_standard_command}"
+      - "22"
+    working_dir: "/tmp"
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf --nodaemon"
 
   devel:
     labels:
-      - "${service_devel_label_url}.description=${service_devel_description}"
-      - "${service_devel_label_url}.vendor=${project_vendor}"
-      - "${service_devel_label_url}.license=${project_license}"
-      - "${service_devel_label_url}.architecture=${project_architecture}"
-      - "${service_devel_label_url}.version=${project_version}"
-    image: "${service_devel_image_url}"
+      - "org.sol-ict.general.purpose.system.distro.centos7_devel.description=General Purpose System Distro - Devel profile, based on Development"
+      - "org.sol-ict.general.purpose.system.distro.centos7_devel.vendor=SOL-ICT"
+      - "org.sol-ict.general.purpose.system.distro.centos7_devel.license=GPLv3"
+      - "org.sol-ict.general.purpose.system.distro.centos7_devel.architecture=amd64"
+      - "org.sol-ict.general.purpose.system.distro.centos7_devel.version=1.0"
+    image: "solict/general-purpose-system-distro:centos7_devel"
     build:
-      context: "${general_context}"
-      dockerfile: "${service_devel_dockerfile}"
+      context: "./dockerfiles"
+      dockerfile: "devel.dockerfile"
     depends_on:
       - standard
     logging:
-      driver: "${general_logging_driver}"
+      driver: "json-file"
     ports:
-      - "${service_devel_networking_port_int1}"
-    working_dir: "${general_working_dir}"
-    command: "${service_devel_command}"
+      - "22"
+    working_dir: "/tmp"
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf --nodaemon"
 
