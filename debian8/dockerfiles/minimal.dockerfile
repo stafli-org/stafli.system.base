@@ -128,7 +128,8 @@ RUN printf "# Install the Package Manager related packages...\n" && \
     printf "# Remove the superfluous packages...\n" && \
     apt-get autoremove --purge && \
     printf "# Cleanup the Package Manager...\n" && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*;
+    apt-get clean && rm -rf /var/lib/apt/lists/*; \
+    printf "Done...\n";
 
 #
 # Configuration
@@ -141,7 +142,8 @@ RUN printf "Configure root account...\n"; \
     echo "${os_timezone}" > /etc/timezone; \
     printf "Configure locales...\n" && \
     sed -i "s># ${os_locale}.${os_charset} ${os_charset}>${os_locale}.${os_charset} ${os_charset}>" /etc/locale.gen && \
-    locale-gen;
+    locale-gen; \
+    printf "Done...\n";
 ENV TZ="${os_timezone}" \
     LANGUAGE="${os_locale}.${os_charset}" LANG="${os_locale}.${os_charset}" LC_ALL="${os_locale}.${os_charset}"
 

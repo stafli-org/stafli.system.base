@@ -64,5 +64,6 @@ RUN printf "# Install the required packages...\n" && \
       libsasl2-dev libldap2-dev libkrb5-dev \
       libxml2-dev zlib1g-dev && \
     printf "# Cleanup the Package Manager...\n" && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*;
+    apt-get clean && rm -rf /var/lib/apt/lists/*; \
+    printf "Done...\n";
 

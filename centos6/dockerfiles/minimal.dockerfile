@@ -130,11 +130,11 @@ RUN printf "# Install the Package Manager related packages...\n" && \
     build-locale-archive && rm -Rf /usr/lib/locale/tmp && \
     printf "# Remove the superfluous packages...\n" && \
     yum remove -y \
-      kernel-firmware kbd-misc \
       dash vim-minimal && \
     package-cleanup -q --leaves --exclude-bin | xargs -l1 yum remove -y && \
     printf "# Cleanup the Package Manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/*;
+    yum clean all && rm -Rf /var/lib/yum/*; \
+    printf "Done...\n";
 
 #
 # Configuration
@@ -146,13 +146,22 @@ RUN printf "Configure root account...\n"; \
     printf "Configure timezone...\n"; \
     echo "${os_timezone}" > /etc/timezone; \
     printf "Configure locales...\n" && \
-    localedef -c -i ${os_locale} -f ${os_charset} ${os_locale}.${os_charset};
+    localedef -c -i ${os_locale} -f ${os_charset} ${os_locale}.${os_charset}; \
+    printf "Done...\n";
 ENV TZ="${os_timezone}" \
     LANGUAGE="${os_locale}.${os_charset}" LANG="${os_locale}.${os_charset}" LC_ALL="${os_locale}.${os_charset}"
 
 # Disable SELinux
 RUN printf "Disable SELinux (permissive)...\n"; \
-    setenforce Permissive; \
-    if [ ! -f /etc/selinux/config ]; then mkdir -p /etc/selinux; touch /etc/selinux/config; printf "\nSELINUX=\n" > /etc/selinux/config; fi; \
-    perl -0p -i -e "s>\nSELINUX=.*>\nSELINUX=permissive>" /etc/selinux/config;
+    if [ hash setenforce 2>/dev/null ]; then \
+      setenforce Permissive; \
+      if [ -f /etc/selinux/config ]; then \
+        perl -0p -i -e "s>\nSELINUX=.*>\nSELINUX=permissive>" /etc/selinux/config; \
+      else \
+        mkdir -p /etc/selinux; \
+        touch /etc/selinux/config; \
+        printf "SELINUX=permissive\n" > /etc/selinux/config; \
+      fi; \
+    fi; \
+    printf "Done...\n";
 

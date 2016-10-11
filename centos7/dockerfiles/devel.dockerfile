@@ -64,5 +64,6 @@ RUN printf "# Install the required packages...\n" && \
       cyrus-sasl-devel openldap-devel krb5-devel \
       libxml2-devel zlib-devel && \
     printf "# Cleanup the Package Manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/*;
+    yum clean all && rm -Rf /var/lib/yum/*; \
+    printf "Done...\n";
 

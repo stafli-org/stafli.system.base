@@ -46,7 +46,8 @@ RUN printf "# Install the required packages...\n" && \
       cron anacron \
       rsyslog logrotate && \
     printf "# Cleanup the Package Manager...\n" && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*;
+    apt-get clean && rm -rf /var/lib/apt/lists/*; \
+    printf "Done...\n";
 
 #
 # Configuration

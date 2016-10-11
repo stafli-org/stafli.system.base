@@ -47,7 +47,8 @@ RUN printf "# Install the required packages...\n" && \
       cronie cronie-anacron \
       rsyslog logrotate && \
     printf "# Cleanup the Package Manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/*;
+    yum clean all && rm -Rf /var/lib/yum/*; \
+    printf "Done...\n";
 
 #
 # Configuration
