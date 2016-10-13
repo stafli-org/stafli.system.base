@@ -40,14 +40,17 @@ ARG app_dropbear_key_size="4096"
 #  - cronie-anacron: for anacron, the cron-like program that doesn't go by time
 #  - rsyslog: for rsyslogd, the rocket-fast system for log processing
 #  - logrotate: for logrotate, the log rotation utility
-RUN printf "# Install the required packages...\n" && \
+RUN printf "Installing repositories and packages...\n" && \
+    \
+    printf "Install the required packages...\n" && \
     yum makecache && yum install -y \
       supervisor dropbear \
       cronie cronie-anacron \
       rsyslog logrotate && \
-    printf "# Cleanup the Package Manager...\n" && \
+    printf "Cleanup the Package Manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/*; \
-    printf "Done...\n";
+    \
+    printf "Finished installing repositories and packages...\n";
 
 #
 # Configuration
@@ -58,7 +61,9 @@ RUN printf "# Install the required packages...\n" && \
 # - Rsyslog
 # - Cron
 # - Dropbear
-RUN printf "Updading Supervisor configuration...\n"; \
+RUN printf "Updading Daemon configuration...\n"; \
+    \
+    printf "Updading Supervisor configuration...\n"; \
     mkdir -p /var/log/supervisor; \
     \
     # ignoring /etc/sysconfig/supervisor \
@@ -219,5 +224,7 @@ chown root:root \${SSH_KEY_RSA};\n\
 chmod 600 \${SSH_KEY_RSA};\n\
 \n\
 exit 0\n" >> ${file}; \
-    printf "Done patching ${file}...\n";
+    printf "Done patching ${file}...\n"; \
+    \
+    printf "Finished Daemon configuration...\n";
 

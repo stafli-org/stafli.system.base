@@ -103,17 +103,19 @@ ENV TERM="${os_terminal}"
 #  - kbd-misc: for console fonts, keymaps etc. kbd-misc is not helpful without kbd
 #  - dash: for dash shell. bash shell is installed and dash was removed in CentOS 7
 #  - vim-minimal: for vim editor. nano editor is installed
-RUN printf "# Install the Package Manager related packages...\n" && \
+RUN printf "Installing repositories and packages...\n" && \
+    \
+    printf "Install the Package Manager related packages...\n" && \
     yum makecache && yum install -y \
       openssl ca-certificates \
       yum-utils yum-plugin-priorities \
       yum-plugin-fastestmirror yum-plugin-keys \
       gnupg && \
-    printf "# Install the repositories and refresh the GPG keys...\n" && \
+    printf "Install the repositories and refresh the GPG keys...\n" && \
     yum makecache && yum install -y \
       epel-release && \
     gpg --refresh-keys && \
-    printf "# Install the required packages...\n" && \
+    printf "Install the required packages...\n" && \
     yum makecache && yum install -y \
       bash tzdata mailcap \
       pwgen which procps htop iotop iftop \
@@ -123,36 +125,42 @@ RUN printf "# Install the Package Manager related packages...\n" && \
       iproute iputils traceroute bind-utils nc \
       wget curl rsync \
       bash-completion dialog screen nano && \
-    printf "# Reinstall and clean locale archives...\n" && \
+    printf "Reinstall and clean locale archives...\n" && \
     yum makecache && yum reinstall -y glibc-common && \
     localedef --list-archive | grep -v -i ^en | xargs localedef --delete-from-archive && \
     mv -f /usr/lib/locale/locale-archive /usr/lib/locale/locale-archive.tmpl && \
     build-locale-archive && rm -Rf /usr/lib/locale/tmp && \
-    printf "# Remove the superfluous packages...\n" && \
+    printf "Remove the superfluous packages...\n" && \
     yum remove -y \
       dash vim-minimal && \
     package-cleanup -q --leaves --exclude-bin | xargs -l1 yum remove -y && \
-    printf "# Cleanup the Package Manager...\n" && \
+    printf "Cleanup the Package Manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/*; \
-    printf "Done...\n";
+    \
+    printf "Finished installing repositories and packages...\n";
 
 #
 # Configuration
 #
 
-# Configure root account, timezone and locales
-RUN printf "Configure root account...\n"; \
+# Configure accounts and internationalization
+RUN printf "Configuring accounts and internationalization...\n"; \
+    \
+    printf "Configure root account...\n"; \
     cp -R /etc/skel/. /root; \
     printf "Configure timezone...\n"; \
     echo "${os_timezone}" > /etc/timezone; \
     printf "Configure locales...\n" && \
     localedef -c -i ${os_locale} -f ${os_charset} ${os_locale}.${os_charset}; \
-    printf "Done...\n";
+    \
+    printf "Finished configuring accounts and internationalization...\n";
 ENV TZ="${os_timezone}" \
     LANGUAGE="${os_locale}.${os_charset}" LANG="${os_locale}.${os_charset}" LC_ALL="${os_locale}.${os_charset}"
 
 # Disable SELinux
-RUN printf "Disable SELinux (permissive)...\n"; \
+RUN printf "Disabling SELinux (permissive)...\n"; \
+    \
+    printf "But only if present in system...\n"; \
     if [ hash setenforce 2>/dev/null ]; then \
       setenforce Permissive; \
       if [ -f /etc/selinux/config ]; then \
@@ -163,5 +171,6 @@ RUN printf "Disable SELinux (permissive)...\n"; \
         printf "SELINUX=permissive\n" > /etc/selinux/config; \
       fi; \
     fi; \
-    printf "Done...\n";
+    \
+    printf "Finished disabling SELinux (permissive)...\n";
 

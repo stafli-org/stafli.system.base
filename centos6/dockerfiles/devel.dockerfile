@@ -53,7 +53,9 @@ MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 #  - krb5-devel: the MIT Kerberos library - development files
 #  - libxml2-devel: the GNOME XML library - development files
 #  - zlib-devel:  the ZLib library - development files
-RUN printf "# Install the required packages...\n" && \
+RUN printf "Installing repositories and packages...\n" && \
+    \
+    printf "Install the required packages...\n" && \
     rpm --rebuilddb && \
     yum makecache && yum install -y \
       patch git \
@@ -64,7 +66,8 @@ RUN printf "# Install the required packages...\n" && \
       openssl-devel gnutls-devel libcurl-devel \
       cyrus-sasl-devel openldap-devel krb5-devel \
       libxml2-devel zlib-devel && \
-    printf "# Cleanup the Package Manager...\n" && \
+    printf "Cleanup the Package Manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/*; \
-    printf "Done...\n";
+    \
+    printf "Finished installing repositories and packages...\n";
 

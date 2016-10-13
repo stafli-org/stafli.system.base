@@ -43,14 +43,6 @@ ENV TERM="${os_terminal}" \
 #
 
 # Disable installation of optional apt packages and enable contrib and non-free components in debian repositories
-RUN printf "# Disable installation of optional apt packages...\n"; \
-    printf "\n# Disable recommended and suggested packages\n\
-APT::Install-Recommends "\""false"\"";\n\
-APT::Install-Suggests "\""false"\"";\n\
-\n" >> /etc/apt/apt.conf; \
-    printf "# Enable contrib and non-free components in debian repositories...\n"; \
-    sed -i "s>main>main contrib non-free>" /etc/apt/sources.list;
-
 # Install the Package Manager related packages and refresh the GPG keys
 #  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
 #  - ca-certificates: adds trusted PEM files of CA certificates to the system
@@ -107,15 +99,24 @@ APT::Install-Suggests "\""false"\"";\n\
 #  - dialog: for dialog, to provide prompts for the bash shell
 #  - screen: for screen, the terminal multiplexer with VT100/ANSI terminal emulation
 #  - nano: for nano, a tiny editor based on pico
-RUN printf "# Install the Package Manager related packages...\n" && \
+RUN printf "Installing repositories and packages...\n" && \
+    \
+    printf "Disable installation of optional apt packages...\n"; \
+    printf "\n# Disable recommended and suggested packages\n\
+APT::Install-Recommends "\""false"\"";\n\
+APT::Install-Suggests "\""false"\"";\n\
+\n" >> /etc/apt/apt.conf; \
+    printf "Enable contrib and non-free components in debian repositories...\n"; \
+    sed -i "s>main>main contrib non-free>" /etc/apt/sources.list; \
+    printf "Install the Package Manager related packages...\n" && \
     apt-key update && \
     apt-get update && apt-get install -qy \
       openssl ca-certificates \
       apt-utils apt-transport-https \
       gnupg gnupg-curl gpgv && \
-    printf "# Install the repositories and refresh the GPG keys...\n" && \
+    printf "Install the repositories and refresh the GPG keys...\n" && \
     gpg --refresh-keys && \
-    printf "# Install the required packages...\n" && \
+    printf "Install the required packages...\n" && \
     apt-get update && apt-get install -qy \
       bash locales tzdata mime-support \
       pwgen debianutils procps htop iotop iftop \
@@ -125,25 +126,29 @@ RUN printf "# Install the Package Manager related packages...\n" && \
       iproute2 iputils-ping iputils-tracepath dnsutils netcat-openbsd \
       wget curl rsync \
       bash-completion dialog screen nano && \
-    printf "# Remove the superfluous packages...\n" && \
+    printf "Remove the superfluous packages...\n" && \
     apt-get autoremove --purge && \
-    printf "# Cleanup the Package Manager...\n" && \
+    printf "Cleanup the Package Manager...\n" && \
     apt-get clean && rm -rf /var/lib/apt/lists/*; \
-    printf "Done...\n";
+    \
+    printf "Finished installing repositories and packages...\n";
 
 #
 # Configuration
 #
 
 # Configure root account, timezone and locales
-RUN printf "Configure root account...\n"; \
+RUN printf "Configuring accounts and internationalization...\n"; \
+    \
+    printf "Configure root account...\n"; \
     cp -R /etc/skel/. /root; \
     printf "Configure timezone...\n"; \
     echo "${os_timezone}" > /etc/timezone; \
     printf "Configure locales...\n" && \
     sed -i "s># ${os_locale}.${os_charset} ${os_charset}>${os_locale}.${os_charset} ${os_charset}>" /etc/locale.gen && \
     locale-gen; \
-    printf "Done...\n";
+    \
+    printf "Finished configuring accounts and internationalization...\n";
 ENV TZ="${os_timezone}" \
     LANGUAGE="${os_locale}.${os_charset}" LANG="${os_locale}.${os_charset}" LC_ALL="${os_locale}.${os_charset}"
 
