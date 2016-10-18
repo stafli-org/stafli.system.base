@@ -28,11 +28,19 @@ services:
 
   minimal:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.debian7_minimal.description=General Purpose System Distro - Minimal service, based on Debian 7 (wheezy)"
-      - "org.sol-ict.general.purpose.system.distro.debian7_minimal.vendor=SOL-ICT"
-      - "org.sol-ict.general.purpose.system.distro.debian7_minimal.license=GPLv3"
-      - "org.sol-ict.general.purpose.system.distro.debian7_minimal.architecture=amd64"
-      - "org.sol-ict.general.purpose.system.distro.debian7_minimal.version=1.0"
+      - "org.label-schema.schema-version=1.0"
+      - "org.label-schema.name=$PROJECT_NAME - Minimal service"
+      - "org.label-schema.description=Based on $PROJECT_ORIGIN"
+      - "org.label-schema.vendor=$PROJECT_VENDOR"
+      - "org.label-schema.url=$PROJECT_URL"
+      - "license=$PROJECT_LICENSE"
+      - "org.label-schema.vcs-ref=$VCS_REF"
+      - "org.label-schema.vcs-url=$VCS_URL"
+      - "os-id=$OS_ID"
+      - "os-version-id=$OS_VERSION_ID"
+      - "architecture=$BUILD_ARCH"
+      - "org.label-schema.version=$BUILD_VERSION"
+      - "org.label-schema.build-date=$BUILD_DATE"
     image: "solict/general-purpose-system-distro:debian7_minimal"
     build:
       context: "./dockerfiles"
@@ -49,11 +57,19 @@ services:
 
   standard:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.debian7_standard.description=General Purpose System Distro - Standard service, based on Minimal service"
-      - "org.sol-ict.general.purpose.system.distro.debian7_standard.vendor=SOL-ICT"
-      - "org.sol-ict.general.purpose.system.distro.debian7_standard.license=GPLv3"
-      - "org.sol-ict.general.purpose.system.distro.debian7_standard.architecture=amd64"
-      - "org.sol-ict.general.purpose.system.distro.debian7_standard.version=1.0"
+      - "org.label-schema.schema-version=1.0"
+      - "org.label-schema.name=$PROJECT_NAME - Standard service"
+      - "org.label-schema.description=Based on $PROJECT_FROM - Minimal service"
+      - "org.label-schema.vendor=$PROJECT_VENDOR"
+      - "org.label-schema.url=$PROJECT_URL"
+      - "license=$PROJECT_LICENSE"
+      - "org.label-schema.vcs-ref=$VCS_REF"
+      - "org.label-schema.vcs-url=$VCS_URL"
+      - "os-id=$OS_ID"
+      - "os-version-id=$OS_VERSION_ID"
+      - "architecture=$BUILD_ARCH"
+      - "org.label-schema.version=$BUILD_VERSION"
+      - "org.label-schema.build-date=$BUILD_DATE"
     image: "solict/general-purpose-system-distro:debian7_standard"
     build:
       context: "./dockerfiles"
@@ -73,11 +89,19 @@ services:
 
   devel:
     labels:
-      - "org.sol-ict.general.purpose.system.distro.debian7_devel.description=General Purpose System Distro - Devel service, based on Standard service"
-      - "org.sol-ict.general.purpose.system.distro.debian7_devel.vendor=SOL-ICT"
-      - "org.sol-ict.general.purpose.system.distro.debian7_devel.license=GPLv3"
-      - "org.sol-ict.general.purpose.system.distro.debian7_devel.architecture=amd64"
-      - "org.sol-ict.general.purpose.system.distro.debian7_devel.version=1.0"
+      - "org.label-schema.schema-version=1.0"
+      - "org.label-schema.name=$PROJECT_NAME - Devel service"
+      - "org.label-schema.description=Based on $PROJECT_FROM - Standard service"
+      - "org.label-schema.vendor=$PROJECT_VENDOR"
+      - "org.label-schema.url=$PROJECT_URL"
+      - "license=$PROJECT_LICENSE"
+      - "org.label-schema.vcs-ref=$VCS_REF"
+      - "org.label-schema.vcs-url=$VCS_URL"
+      - "os-id=$OS_ID"
+      - "os-version-id=$OS_VERSION_ID"
+      - "architecture=$BUILD_ARCH"
+      - "org.label-schema.version=$BUILD_VERSION"
+      - "org.label-schema.build-date=$BUILD_DATE"
     image: "solict/general-purpose-system-distro:debian7_devel"
     build:
       context: "./dockerfiles"
