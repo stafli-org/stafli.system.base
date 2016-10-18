@@ -379,16 +379,16 @@ netup:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Creating networks for debian8...
-		docker network create debian7_default;
-		@echo
-		@echo Creating networks for debian7...
 		docker network create debian8_default;
 		@echo
+		@echo Creating networks for debian7...
+		docker network create debian7_default;
+		@echo
 		@echo Creating networks for centos7...
-		docker network create centos6_default;
+		docker network create centos7_default;
 		@echo
 		@echo Creating networks for centos6...
-		docker network create centos7_default;
+		docker network create centos6_default;
         else
 		@echo Creating networks for $(DISTRO)...
 		docker network create $(DISTRO)_default;
@@ -401,16 +401,16 @@ netdown:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Removing networks for debian8...
-		docker network rm debian7_default;
-		@echo
-		@echo Removing networks for debian7...
 		docker network rm debian8_default;
 		@echo
+		@echo Removing networks for debian7...
+		docker network rm debian7_default;
+		@echo
 		@echo Removing networks for centos7...
-		docker network rm centos6_default;
+		docker network rm centos7_default;
 		@echo
 		@echo Removing networks for centos6...
-		docker network rm centos7_default;
+		docker network rm centos6_default;
         else
 		@echo Removing networks for $(DISTRO)...
 		docker network rm $(DISTRO)_default;
