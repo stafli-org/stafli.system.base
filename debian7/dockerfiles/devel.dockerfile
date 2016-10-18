@@ -1,6 +1,6 @@
 
 #
-#    Debian 7 (wheezy) devel profile (dockerfile)
+#    Debian 7 (wheezy) devel service (dockerfile)
 #    Copyright (C) 2016 SOL-ICT
 #    This file is part of the Docker General Purpose System Distro.
 #

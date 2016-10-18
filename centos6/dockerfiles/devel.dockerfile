@@ -1,6 +1,6 @@
 
 #
-#    CentOS 6 (centos6) devel profile (dockerfile)
+#    CentOS 6 (centos6) devel service (dockerfile)
 #    Copyright (C) 2016 SOL-ICT
 #    This file is part of the Docker General Purpose System Distro.
 #

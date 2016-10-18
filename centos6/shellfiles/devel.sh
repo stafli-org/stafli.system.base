@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    CentOS 6 (centos6) devel profile (shell)
+#    CentOS 6 (centos6) devel service (shell script)
 #    Copyright (C) 2016 SOL-ICT
 #    This file is part of the Docker General Purpose System Distro.
 #

@@ -1,6 +1,6 @@
 
 #
-#    CentOS 7 (centos7) minimal profile (dockerfile)
+#    CentOS 7 (centos7) minimal service (dockerfile)
 #    Copyright (C) 2016 SOL-ICT
 #    This file is part of the Docker General Purpose System Distro.
 #
