@@ -218,5 +218,9 @@ chmod 600 \${SSH_KEY_RSA};\n\
 exit 0\n" >> ${file}; \
     printf "Done patching ${file}...\n"; \
     \
+    printf "\n# Testing configuration...\n"; \
+    echo "Testing $(which rsyslogd):"; $(which rsyslogd) -v; \
+    printf "Done testing configuration...\n"; \
+    \
     printf "Finished Daemon configuration...\n";
 
