@@ -109,7 +109,7 @@ startsecs=0\n\
     # /etc/supervisor/conf.d/rsyslogd.conf \
     file="/etc/supervisor/conf.d/rsyslogd.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# rsyslogd\n\
+    printf "# Rsyslog\n\
 [program:rsyslogd]\n\
 command=/bin/bash -c \"\$(which rsyslogd) -f /etc/rsyslog.conf -c5 -n\"\n\
 autostart=false\n\
@@ -139,7 +139,7 @@ autorestart=true\n\
     # /etc/supervisor/conf.d/crond.conf \
     file="/etc/supervisor/conf.d/crond.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# crond\n\
+    printf "# Cron\n\
 [program:crond]\n\
 command=/bin/bash -c \"\$(which cron) -f\"\n\
 autostart=false\n\
@@ -155,7 +155,7 @@ autorestart=true\n\
     # /etc/supervisor/conf.d/dropbear.conf \
     file="/etc/supervisor/conf.d/dropbear.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# dropbear\n\
+    printf "# Dropbear\n\
 [program:dropbear]\n\
 command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/dropbear/dropbear.conf) && exec \$(which dropbear) \$opts -F\"\n\
 autostart=false\n\
