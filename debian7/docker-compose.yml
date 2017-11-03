@@ -26,35 +26,6 @@ version: '2'
 #
 services:
 
-  minimal:
-    labels:
-      - "org.label-schema.schema-version=1.0"
-      - "org.label-schema.name=$PROJECT_NAME - Minimal service"
-      - "org.label-schema.description=Based on $PROJECT_ORIGIN"
-      - "org.label-schema.vendor=$PROJECT_VENDOR"
-      - "org.label-schema.url=$PROJECT_URL"
-      - "license=$PROJECT_LICENSE"
-      - "org.label-schema.vcs-ref=$VCS_REF"
-      - "org.label-schema.vcs-url=$VCS_URL"
-      - "os-id=$OS_ID"
-      - "os-version-id=$OS_VERSION_ID"
-      - "architecture=$BUILD_ARCH"
-      - "org.label-schema.version=$BUILD_VERSION"
-      - "org.label-schema.build-date=$BUILD_DATE"
-    image: "solict/general-purpose-system-distro:debian7_minimal"
-    build:
-      context: "./dockerfiles"
-      dockerfile: "minimal.dockerfile"
-      args:
-        os_terminal: "linux"
-        os_timezone: "Etc/UTC"
-        os_locale: "en_GB"
-        os_charset: "UTF-8"
-    logging:
-      driver: "json-file"
-    working_dir: "/tmp"
-    command: "/bin/bash"
-
   standard:
     labels:
       - "org.label-schema.schema-version=1.0"
@@ -87,34 +58,6 @@ services:
     working_dir: "/tmp"
     command: "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf --nodaemon"
 
-  devel:
-    labels:
-      - "org.label-schema.schema-version=1.0"
-      - "org.label-schema.name=$PROJECT_NAME - Devel service"
-      - "org.label-schema.description=Based on $PROJECT_FROM - Standard service"
-      - "org.label-schema.vendor=$PROJECT_VENDOR"
-      - "org.label-schema.url=$PROJECT_URL"
-      - "license=$PROJECT_LICENSE"
-      - "org.label-schema.vcs-ref=$VCS_REF"
-      - "org.label-schema.vcs-url=$VCS_URL"
-      - "os-id=$OS_ID"
-      - "os-version-id=$OS_VERSION_ID"
-      - "architecture=$BUILD_ARCH"
-      - "org.label-schema.version=$BUILD_VERSION"
-      - "org.label-schema.build-date=$BUILD_DATE"
-    image: "solict/general-purpose-system-distro:debian7_devel"
-    build:
-      context: "./dockerfiles"
-      dockerfile: "devel.dockerfile"
-    depends_on:
-      - standard
-    logging:
-      driver: "json-file"
-    ports:
-      - "22"
-    working_dir: "/tmp"
-    command: "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf --nodaemon"
-
 #
 # Networks
 #
@@ -126,10 +69,6 @@ networks:
 # Volumes
 #
 volumes:
-  minimal_data:
-    driver: "local"
   standard_data:
-    driver: "local"
-  devel_data:
     driver: "local"
 

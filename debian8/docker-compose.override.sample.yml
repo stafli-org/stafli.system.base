@@ -26,20 +26,10 @@ version: '2'
 #
 services:
 
-  minimal:
-    build:
-      args:
-        os_timezone: "US/Eastern"
-        os_locale: "en_US"
-
   standard:
     build:
       args:
         app_dropbear_listen_port: "10022"
-    ports:
-      - "10022"
-
-  devel:
     ports:
       - "10022"
 
