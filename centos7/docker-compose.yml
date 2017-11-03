@@ -1,8 +1,8 @@
 ---
 #
-#    CentOS 7 (centos7) docker-compose.yml
-#    Copyright (C) 2016 SOL-ICT
-#    This file is part of the Docker General Purpose System Distro.
+#    CentOS 7 (centos7) Base System (docker-compose.yml)
+#    Copyright (C) 2016-2017 Stafli
+#    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@ version: '2'
 #
 services:
 
-  standard:
+  base:
     labels:
       - "org.label-schema.schema-version=1.0"
-      - "org.label-schema.name=$PROJECT_NAME - Standard service"
+      - "org.label-schema.name=$PROJECT_NAME - Base service"
       - "org.label-schema.description=Based on $PROJECT_FROM - Minimal service"
       - "org.label-schema.vendor=$PROJECT_VENDOR"
       - "org.label-schema.url=$PROJECT_URL"
@@ -41,10 +41,10 @@ services:
       - "architecture=$BUILD_ARCH"
       - "org.label-schema.version=$BUILD_VERSION"
       - "org.label-schema.build-date=$BUILD_DATE"
-    image: "solict/general-purpose-system-distro:centos7_standard"
+    image: "stafli/stafli.base.system:centos7_base"
     build:
       context: "./dockerfiles"
-      dockerfile: "standard.dockerfile"
+      dockerfile: "base.dockerfile"
       args:
         app_dropbear_listen_addr: "0.0.0.0"
         app_dropbear_listen_port: "22"
@@ -69,6 +69,6 @@ networks:
 # Volumes
 #
 volumes:
-  standard_data:
+  base_data:
     driver: "local"
 

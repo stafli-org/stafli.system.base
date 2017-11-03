@@ -1,8 +1,8 @@
 
 #
-#    CentOS 6 (centos6) standard service (dockerfile)
-#    Copyright (C) 2016 SOL-ICT
-#    This file is part of the Docker General Purpose System Distro.
+#    CentOS 7 (centos7) Base System (dockerfile)
+#    Copyright (C) 2016-2017 Stafli
+#    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-FROM solict/general-purpose-system-distro:centos6_minimal
+FROM stafli/stafli.minimal.system:centos7_minimal
 MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 
 #
@@ -43,7 +43,6 @@ ARG app_dropbear_key_size="4096"
 RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Install the required packages...\n" && \
-    rpm --rebuilddb && \
     yum makecache && yum install -y \
       supervisor dropbear \
       cronie cronie-anacron \
@@ -73,23 +72,33 @@ RUN printf "Updading Daemon configuration...\n"; \
     file="/etc/supervisord.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file}; \
-    perl -0p -i -e "s>\[unix_http_server\]\nhttp_port=.*>\[unix_http_server\]\nhttp_port=/dev/shm/supervisor.sock>" ${file}; \
+    perl -0p -i -e "s>\[unix_http_server\]\nfile=.*>\[unix_http_server\]\nfile=/dev/shm/supervisor.sock>" ${file}; \
     perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file}; \
-    # includes available only on v3.x+ \
+    perl -0p -i -e "s>files = supervisord.d/\*\.ini>files = supervisord.d/*.ini\nfiles = supervisord.d/*.conf\n>" ${file}; \
     printf "Done patching ${file}...\n"; \
     \
-    # init is not working at this point \
+    # /etc/supervisord.d/init.conf \
+    file="/etc/supervisord.d/init.conf"; \
+    printf "\n# Applying configuration for ${file}...\n"; \
+    printf "# init\n\
+[program:init]\n\
+command=/bin/bash -c \"supervisorctl start rclocal; supervisorctl start rsyslogd; supervisorctl start crond; sleep 5; supervisorctl start dropbear;\"\n\
+autostart=true\n\
+autorestart=false\n\
+startsecs=0\n\
+\n" > ${file}; \
+    printf "Done patching ${file}...\n"; \
     \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
+    # /etc/supervisord.d/rclocal.conf \
+    file="/etc/supervisord.d/rclocal.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# rclocal\n\
 [program:rclocal]\n\
 command=/bin/bash -c \"/etc/rc.local\"\n\
-autostart=true\n\
+autostart=false\n\
 autorestart=false\n\
 startsecs=0\n\
-\n" >> ${file}; \
+\n" > ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     # /etc/rc.local \
@@ -98,15 +107,15 @@ startsecs=0\n\
     \
     printf "Updading Rsyslog configuration...\n"; \
     \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
+    # /etc/supervisord.d/rsyslogd.conf \
+    file="/etc/supervisord.d/rsyslogd.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# Rsyslog\n\
 [program:rsyslogd]\n\
-command=/bin/bash -c \"\$(which rsyslogd) -f /etc/rsyslog.conf -c5 -n\"\n\
-autostart=true\n\
+command=/bin/bash -c \"\$(which rsyslogd) -f /etc/rsyslog.conf -n\"\n\
+autostart=false\n\
 autorestart=true\n\
-\n" >> ${file}; \
+\n" > ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     # ignoring /etc/sysconfig/rsyslog \
@@ -116,19 +125,34 @@ autorestart=true\n\
     printf "\n# Applying configuration for ${file}...\n"; \
     # Disable kernel logging \
     perl -0p -i -e "s>\\$\\ModLoad imklog>#\\$\\ModLoad imklog>" ${file}; \
+    # Enable socket input and local logging \
+    # http://www.projectatomic.io/blog/2014/09/running-syslog-within-a-docker-container/ \
+    perl -0p -i -e "s>#\\$\\ModLoad imuxsock>\\$\\ModLoad imuxsock>" ${file}; \
+    perl -0p -i -e "s>\\$\\OmitLocalLogging on>\\$\\OmitLocalLogging off>" ${file}; \
+    # Disable systemd (journald) logging \
+    # http://www.projectatomic.io/blog/2014/09/running-syslog-within-a-docker-container/ \
+    perl -0p -i -e "s>\\$\\ModLoad imjournal>#\\$\\ModLoad imjournal>" ${file}; \
+    perl -0p -i -e "s>\\$\\IMJournalStateFile>#\\$\\IMJournalStateFile>" ${file}; \
+    printf "Done patching ${file}...\n"; \
+    \
+    # /etc/rsyslog.d/listen.conf \
+    file="/etc/rsyslog.d/listen.conf"; \
+    printf "\n# Applying configuration for ${file}...\n"; \
+    # Disable systemd (journald) logging \
+    perl -0p -i -e "s>\\$\\SystemLogSocketName>#\\$\\SystemLogSocketName>" ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     printf "Updading Cron configuration...\n"; \
     \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
+    # /etc/supervisord.d/crond.conf \
+    file="/etc/supervisord.d/crond.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# Cron\n\
 [program:crond]\n\
 command=/bin/bash -c \"\$(which crond) -n\"\n\
-autostart=true\n\
+autostart=false\n\
 autorestart=true\n\
-\n" >> ${file}; \
+\n" > ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     # ignoring /etc/sysconfig/crond \
@@ -136,15 +160,15 @@ autorestart=true\n\
     \
     printf "Updading Dropbear configuration...\n"; \
     \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
+    # /etc/supervisord.d/dropbear.conf \
+    file="/etc/supervisord.d/dropbear.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# Dropbear\n\
 [program:dropbear]\n\
 command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/dropbear/dropbear.conf) && exec \$(which dropbear) \$opts -F\"\n\
-autostart=true\n\
+autostart=false\n\
 autorestart=true\n\
-\n" >> ${file}; \
+\n" > ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     # ignoring /etc/sysconfig/dropbear \
@@ -203,6 +227,7 @@ exit 0\n" >> ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     printf "\n# Testing configuration...\n"; \
+    echo "Testing $(which supervisord):"; $(which supervisord) -v; \
     echo "Testing $(which rsyslogd):"; $(which rsyslogd) -v; \
     printf "Done testing configuration...\n"; \
     \

@@ -1,8 +1,8 @@
 
 #
-#    CentOS 7 (centos7) standard service (dockerfile)
-#    Copyright (C) 2016 SOL-ICT
-#    This file is part of the Docker General Purpose System Distro.
+#    Debian 8 (jessie) Base System (dockerfile)
+#    Copyright (C) 2016-2017 Stafli
+#    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-FROM solict/general-purpose-system-distro:centos7_minimal
+FROM stafli/stafli.minimal.system:debian8_minimal
 MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 
 #
@@ -36,19 +36,19 @@ ARG app_dropbear_key_size="4096"
 # Install daemon and utilities packages
 #  - supervisor: for supervisord, to launch and manage processes
 #  - dropbear: for dropbear, a lightweight SSH2 server and client that replaces OpenSSH
-#  - cronie: for crond, the process scheduling daemon
-#  - cronie-anacron: for anacron, the cron-like program that doesn't go by time
+#  - cron: for crond, the process scheduling daemon
+#  - anacron: for anacron, the cron-like program that doesn't go by time
 #  - rsyslog: for rsyslogd, the rocket-fast system for log processing
 #  - logrotate: for logrotate, the log rotation utility
 RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Install the required packages...\n" && \
-    yum makecache && yum install -y \
+    apt-get update && apt-get install -qy \
       supervisor dropbear \
-      cronie cronie-anacron \
+      cron anacron \
       rsyslog logrotate && \
-    printf "Cleanup the Package Manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/*; \
+    printf "# Cleanup the Package Manager...\n" && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*; \
     \
     printf "Finished installing repositories and packages...\n";
 
@@ -66,19 +66,18 @@ RUN printf "Updading Daemon configuration...\n"; \
     printf "Updading Supervisor configuration...\n"; \
     mkdir -p /var/log/supervisor; \
     \
-    # ignoring /etc/sysconfig/supervisor \
+    # ignoring /etc/default/supervisor \
     \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
+    # /etc/supervisor/supervisord.conf \
+    file="/etc/supervisor/supervisord.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
-    perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file}; \
+    perl -0p -i -e "s>\[supervisord\]\nlogfile>\[supervisord\]\nnodaemon=true\nlogfile>" ${file}; \
     perl -0p -i -e "s>\[unix_http_server\]\nfile=.*>\[unix_http_server\]\nfile=/dev/shm/supervisor.sock>" ${file}; \
     perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file}; \
-    perl -0p -i -e "s>files = supervisord.d/\*\.ini>files = supervisord.d/*.ini\nfiles = supervisord.d/*.conf\n>" ${file}; \
     printf "Done patching ${file}...\n"; \
     \
-    # /etc/supervisord.d/init.conf \
-    file="/etc/supervisord.d/init.conf"; \
+    # /etc/supervisor/conf.d/init.conf \
+    file="/etc/supervisor/conf.d/init.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# init\n\
 [program:init]\n\
@@ -89,8 +88,8 @@ startsecs=0\n\
 \n" > ${file}; \
     printf "Done patching ${file}...\n"; \
     \
-    # /etc/supervisord.d/rclocal.conf \
-    file="/etc/supervisord.d/rclocal.conf"; \
+    # /etc/supervisor/conf.d/rclocal.conf \
+    file="/etc/supervisor/conf.d/rclocal.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# rclocal\n\
 [program:rclocal]\n\
@@ -107,8 +106,8 @@ startsecs=0\n\
     \
     printf "Updading Rsyslog configuration...\n"; \
     \
-    # /etc/supervisord.d/rsyslogd.conf \
-    file="/etc/supervisord.d/rsyslogd.conf"; \
+    # /etc/supervisor/conf.d/rsyslogd.conf \
+    file="/etc/supervisor/conf.d/rsyslogd.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# Rsyslog\n\
 [program:rsyslogd]\n\
@@ -118,50 +117,43 @@ autorestart=true\n\
 \n" > ${file}; \
     printf "Done patching ${file}...\n"; \
     \
-    # ignoring /etc/sysconfig/rsyslog \
+    # ignoring /etc/default/rsyslog \
     \
     # /etc/rsyslog.conf \
     file="/etc/rsyslog.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     # Disable kernel logging \
     perl -0p -i -e "s>\\$\\ModLoad imklog>#\\$\\ModLoad imklog>" ${file}; \
-    # Enable socket input and local logging \
-    # http://www.projectatomic.io/blog/2014/09/running-syslog-within-a-docker-container/ \
-    perl -0p -i -e "s>#\\$\\ModLoad imuxsock>\\$\\ModLoad imuxsock>" ${file}; \
-    perl -0p -i -e "s>\\$\\OmitLocalLogging on>\\$\\OmitLocalLogging off>" ${file}; \
-    # Disable systemd (journald) logging \
-    # http://www.projectatomic.io/blog/2014/09/running-syslog-within-a-docker-container/ \
-    perl -0p -i -e "s>\\$\\ModLoad imjournal>#\\$\\ModLoad imjournal>" ${file}; \
-    perl -0p -i -e "s>\\$\\IMJournalStateFile>#\\$\\IMJournalStateFile>" ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # /etc/rsyslog.d/listen.conf \
-    file="/etc/rsyslog.d/listen.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    # Disable systemd (journald) logging \
-    perl -0p -i -e "s>\\$\\SystemLogSocketName>#\\$\\SystemLogSocketName>" ${file}; \
+    # Enable cron logging \
+    perl -0p -i -e "s>#cron\.\*>cron.*>" ${file}; \
+    # Disable xconsole \
+    perl -0p -i -e "s>daemon.*;mail>#daemon.*;mail>" ${file}; \
+    perl -0p -i -e "s>\t*news.err;>#\tnews.err;>" ${file}; \
+    perl -0p -i -e "s>\t\*\.\=debug>#\t*.debug>" ${file}; \
+    perl -0p -i -e "s>\t\*\.\=debug>#\t*.debug>" ${file}; \
+    perl -0p -i -e "s>\t*\*\.=notice;\*\.=warn\t\|/dev/xconsole>#\t*.=notice;*.=warn\t\|/dev/xconsole>" ${file}; \
     printf "Done patching ${file}...\n"; \
     \
     printf "Updading Cron configuration...\n"; \
     \
-    # /etc/supervisord.d/crond.conf \
-    file="/etc/supervisord.d/crond.conf"; \
+    # /etc/supervisor/conf.d/crond.conf \
+    file="/etc/supervisor/conf.d/crond.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# Cron\n\
 [program:crond]\n\
-command=/bin/bash -c \"\$(which crond) -n\"\n\
+command=/bin/bash -c \"\$(which cron) -f\"\n\
 autostart=false\n\
 autorestart=true\n\
 \n" > ${file}; \
     printf "Done patching ${file}...\n"; \
     \
-    # ignoring /etc/sysconfig/crond \
+    # ignoring /etc/default/cron \
     touch /etc/crontab; \
     \
     printf "Updading Dropbear configuration...\n"; \
     \
-    # /etc/supervisord.d/dropbear.conf \
-    file="/etc/supervisord.d/dropbear.conf"; \
+    # /etc/supervisor/conf.d/dropbear.conf \
+    file="/etc/supervisor/conf.d/dropbear.conf"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# Dropbear\n\
 [program:dropbear]\n\
@@ -171,7 +163,7 @@ autorestart=true\n\
 \n" > ${file}; \
     printf "Done patching ${file}...\n"; \
     \
-    # ignoring /etc/sysconfig/dropbear \
+    # ignoring /etc/default/dropbear \
     \
     # /etc/dropbear/dropbear.conf \
     file="/etc/dropbear/dropbear.conf"; \

@@ -1,8 +1,8 @@
 
 #
-#    Debian 7 (wheezy) standard service (dockerfile)
-#    Copyright (C) 2016 SOL-ICT
-#    This file is part of the Docker General Purpose System Distro.
+#    Debian 7 (wheezy) Base System (dockerfile)
+#    Copyright (C) 2016-2017 Stafli
+#    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-FROM solict/general-purpose-system-distro:debian7_minimal
+FROM stafli/stafli.minimal.system:debian7_minimal
 MAINTAINER Luís Pedro Algarvio <lp.algarvio@gmail.com>
 
 #

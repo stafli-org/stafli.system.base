@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#    Debian 7 (wheezy) standard service (shell script)
-#    Copyright (C) 2016 SOL-ICT
-#    This file is part of the Docker General Purpose System Distro.
+#    Debian 8 (jessie) Base System (shellscript)
+#    Copyright (C) 2016-2017 Stafli
+#    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ alias RUN='';
 shopt -s expand_aliases;
 
 # Load dockerfile
-source "$(dirname $(readlink -f $0))/../dockerfiles/standard.dockerfile";
+source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
 
 #
 # Cleanup
@@ -41,12 +41,12 @@ apt-get remove --purge -y dropbear supervisor;
 #
 
 # Enable daemon
-update-rc.d rsyslog enable;
-update-rc.d cron enable;
-update-rc.d sshd enable;
+systemctl enable rsyslog.service;
+systemctl enable cron.service;
+systemctl enable ssh.service;
 
 # Start daemon
-service rsyslog restart;
-service cron restart;
-service sshd restart;
+systemctl restart rsyslog.service;
+systemctl restart cron.service;
+systemctl restart ssh.service;
 

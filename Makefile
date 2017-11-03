@@ -1,7 +1,7 @@
 #
-#    Makefile
-#    Copyright (C) 2016 SOL-ICT
-#    This file is part of the Docker General Purpose System Distro.
+#    Stafli Base System (Makefile)
+#    Copyright (C) 2016-2017 Stafli
+#    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ all: help
 
 help:
 	@echo "\
-Docker General Purpose System Distro\n\
+Stafli Base System\n\
 \n\
 Syntax:\n\
 make <command> DISTRO=<distribution>\n\
@@ -147,28 +147,28 @@ purge:
         ifeq ($(DISTRO), all)
 		@echo Purging containers, networks, volumes and images for debian8...
 		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker volume rm debian8_standard_data;
-		docker rmi solict/general-purpose-system-distro:debian8_standard;
+		docker volume rm debian8_base_data;
+		docker rmi stafli/stafli.base.system:debian8_base;
 		@echo
 		@echo Purging containers, networks, volumes and images for debian7...
 		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker volume rm debian7_standard_data;
-		docker rmi solict/general-purpose-system-distro:debian7_standard;
+		docker volume rm debian7_base_data;
+		docker rmi stafli/stafli.base.system:debian7_base;
 		@echo
 		@echo Purging containers, networks, volumes and images for centos7...
 		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker volume rm centos7_standard_data;
-		docker rmi solict/general-purpose-system-distro:centos7_standard;
+		docker volume rm centos7_base_data;
+		docker rmi stafli/stafli.base.system:centos7_base;
 		@echo
 		@echo Purging containers, networks, volumes and images for centos6...
 		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker volume rm centos6_standard_data;
-		docker rmi solict/general-purpose-system-distro:centos6_standard;
+		docker volume rm centos6_base_data;
+		docker rmi stafli/stafli.base.system:centos6_base;
         else
 		@echo Purging containers, networks, volumes and images for $(DISTRO)...
 		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker volume rm $(DISTRO)_standard_data;
-		docker rmi solict/general-purpose-system-distro:$(DISTRO)_standard;
+		docker volume rm $(DISTRO)_base_data;
+		docker rmi stafli/stafli.base.system:$(DISTRO)_base;
         endif
 
 
@@ -178,19 +178,19 @@ img-ls:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Listing images for debian8...
-		docker images | grep -E "solict/general-purpose-system-distro.*debian8" | sort -n;
+		docker images | grep -E "stafli/stafli.base.system.*debian8" | sort -n;
 		@echo
 		@echo Listing images for debian7...
-		docker images | grep -E "solict/general-purpose-system-distro.*debian7" | sort -n;
+		docker images | grep -E "stafli/stafli.base.system.*debian7" | sort -n;
 		@echo
 		@echo Listing images for centos7...
-		docker images | grep -E "solict/general-purpose-system-distro.*centos7" | sort -n;
+		docker images | grep -E "stafli/stafli.base.system.*centos7" | sort -n;
 		@echo
 		@echo Listing images for centos6...
-		docker images | grep -E "solict/general-purpose-system-distro.*centos6" | sort -n;
+		docker images | grep -E "stafli/stafli.base.system.*centos6" | sort -n;
         else
 		@echo Listing images for $(DISTRO)...
-		docker images | grep -E "solict/general-purpose-system-distro.*$(DISTRO)" | sort -n;
+		docker images | grep -E "stafli/stafli.base.system.*$(DISTRO)" | sort -n;
         endif
 
 
@@ -244,19 +244,19 @@ img-rm:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Removing images for debian8...
-		docker rmi solict/general-purpose-system-distro:debian8_standard;
+		docker rmi stafli/stafli.base.system:debian8_base;
 		@echo
 		@echo Removing images for debian7...
-		docker rmi solict/general-purpose-system-distro:debian7_standard;
+		docker rmi stafli/stafli.base.system:debian7_base;
 		@echo
 		@echo Removing images for centos7...
-		docker rmi solict/general-purpose-system-distro:centos7_standard;
+		docker rmi stafli/stafli.base.system:centos7_base;
 		@echo
 		@echo Removing images for centos6...
-		docker rmi solict/general-purpose-system-distro:centos6_standard;
+		docker rmi stafli/stafli.base.system:centos6_base;
         else
 		@echo Removing images for $(DISTRO)...
-		docker rmi solict/general-purpose-system-distro:$(DISTRO)_standard;
+		docker rmi stafli/stafli.base.system:$(DISTRO)_base;
         endif
 
 
@@ -442,19 +442,19 @@ con-inspect:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Inspecting containers for debian8...
-		docker inspect debian8_standard_1;
+		docker inspect debian8_base_1;
 		@echo
 		@echo Inspecting containers for debian7...
-		docker inspect debian7_standard_1;
+		docker inspect debian7_base_1;
 		@echo
 		@echo Inspecting containers for centos7...
-		docker inspect centos7_standard_1;
+		docker inspect centos7_base_1;
 		@echo
 		@echo Inspecting containers for centos6...
-		docker inspect centos6_standard_1;
+		docker inspect centos6_base_1;
         else
 		@echo Inspecting containers for $(DISTRO)...
-		docker inspect $(DISTRO)_standard_1;
+		docker inspect $(DISTRO)_base_1;
         endif
 
 con-ips:
@@ -463,19 +463,19 @@ con-ips:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Showing IP addresses of containers for debian8...
-		docker inspect debian8_standard_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
+		docker inspect debian8_base_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
 		@echo
 		@echo Showing IP addresses of containers for debian7...
-		docker inspect debian7_standard_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
+		docker inspect debian7_base_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
 		@echo
 		@echo Showing IP addresses of containers for centos7...
-		docker inspect centos7_standard_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
+		docker inspect centos7_base_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
 		@echo
 		@echo Showing IP addresses of containers for centos6...
-		docker inspect centos6_standard_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
+		docker inspect centos6_base_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
         else
 		@echo Showing IP addresses of containers for $(DISTRO)...
-		docker inspect $(DISTRO)_standard_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
+		docker inspect $(DISTRO)_base_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
         endif
 
 
@@ -485,19 +485,19 @@ con-ports:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Showing ports of containers for debian8...
-		docker port debian8_standard_1;
+		docker port debian8_base_1;
 		@echo
 		@echo Showing ports of containers for debian7...
-		docker port debian7_standard_1;
+		docker port debian7_base_1;
 		@echo
 		@echo Showing ports of containers for centos7...
-		docker port centos7_standard_1;
+		docker port centos7_base_1;
 		@echo
 		@echo Showing ports of containers for centos6...
-		docker port centos6_standard_1;
+		docker port centos6_base_1;
         else
 		@echo Showing ports of containers for $(DISTRO)...
-		docker port $(DISTRO)_standard_1;
+		docker port $(DISTRO)_base_1;
         endif
 
 
@@ -507,19 +507,19 @@ con-top:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Showing processes of containers for debian8...
-		docker top debian8_standard_1;
+		docker top debian8_base_1;
 		@echo
 		@echo Showing processes of containers for debian7...
-		docker top debian7_standard_1;
+		docker top debian7_base_1;
 		@echo
 		@echo Showing processes of containers for centos7...
-		docker top centos7_standard_1;
+		docker top centos7_base_1;
 		@echo
 		@echo Showing processes of containers for centos6...
-		docker top centos6_standard_1;
+		docker top centos6_base_1;
         else
 		@echo Showing processes of containers for $(DISTRO)...
-		docker top $(DISTRO)_standard_1;
+		docker top $(DISTRO)_base_1;
         endif
 
 
@@ -683,19 +683,19 @@ vol-create:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Creating volumes for debian8...
-		docker volume create --driver local --name debian8_standard_data;
+		docker volume create --driver local --name debian8_base_data;
 		@echo
 		@echo Creating volumes for debian7...
-		docker volume create --driver local --name debian7_standard_data;
+		docker volume create --driver local --name debian7_base_data;
 		@echo
 		@echo Creating volumes for centos7...
-		docker volume create --driver local --name centos7_standard_data;
+		docker volume create --driver local --name centos7_base_data;
 		@echo
 		@echo Creating volumes for centos6...
-		docker volume create --driver local --name centos6_standard_data;
+		docker volume create --driver local --name centos6_base_data;
         else
 		@echo Creating volumes for $(DISTRO)...
-		docker volume create --driver local --name $(DISTRO)_standard_data;
+		docker volume create --driver local --name $(DISTRO)_base_data;
         endif
 
 
@@ -705,19 +705,19 @@ vol-rm:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Removing volumes for debian8...
-		docker volume rm debian8_standard_data;
+		docker volume rm debian8_base_data;
 		@echo
 		@echo Removing volumes for debian7...
-		docker volume rm debian7_standard_data;
+		docker volume rm debian7_base_data;
 		@echo
 		@echo Removing volumes for centos7...
-		docker volume rm centos7_standard_data;
+		docker volume rm centos7_base_data;
 		@echo
 		@echo Removing volumes for centos6...
-		docker volume rm centos6_standard_data;
+		docker volume rm centos6_base_data;
         else
 		@echo Removing volumes for $(DISTRO)...
-		docker volume rm $(DISTRO)_standard_data;
+		docker volume rm $(DISTRO)_base_data;
         endif
 
 
@@ -727,19 +727,19 @@ vol-inspect:
 	@echo
         ifeq ($(DISTRO), all)
 		@echo Inspecting volumes for debian8...
-		docker volume inspect debian8_standard_data;
+		docker volume inspect debian8_base_data;
 		@echo
 		@echo Inspecting volumes for debian7...
-		docker volume inspect debian7_standard_data;
+		docker volume inspect debian7_base_data;
 		@echo
 		@echo Inspecting volumes for centos7...
-		docker volume inspect centos7_standard_data;
+		docker volume inspect centos7_base_data;
 		@echo
 		@echo Inspecting volumes for centos6...
-		docker volume inspect centos6_standard_data;
+		docker volume inspect centos6_base_data;
         else
 		@echo Inspecting volumes for $(DISTRO)...
-		docker volume inspect $(DISTRO)_standard_data;
+		docker volume inspect $(DISTRO)_base_data;
         endif
 
 

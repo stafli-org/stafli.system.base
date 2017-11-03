@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#    CentOS 7 (centos7) standard service (shell script)
-#    Copyright (C) 2016 SOL-ICT
-#    This file is part of the Docker General Purpose System Distro.
+#    CentOS 6 (centos6) Base System (shellscript)
+#    Copyright (C) 2016-2017 Stafli
+#    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ alias RUN='';
 shopt -s expand_aliases;
 
 # Load dockerfile
-source "$(dirname $(readlink -f $0))/../dockerfiles/standard.dockerfile";
+source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
 
 #
 # Cleanup
@@ -41,12 +41,12 @@ yum remove -y dropbear supervisor;
 #
 
 # Enable daemon
-systemctl enable rsyslog.service;
-systemctl enable crond.service;
-systemctl enable sshd.service;
+chkconfig rsyslog on;
+chkconfig crond on;
+chkconfig sshd enable;
 
 # Start daemon
-systemctl restart rsyslog.service;
-systemctl restart crond.service;
-systemctl restart sshd.service;
+service rsyslog restart;
+service crond restart;
+service sshd restart;
 
