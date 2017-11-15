@@ -1,6 +1,7 @@
 #
 #    Stafli Base System (Makefile)
 #    Copyright (C) 2016-2017 Stafli
+#    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
 #
 # This program is free software: you can redistribute it and/or modify

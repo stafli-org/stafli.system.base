@@ -26,7 +26,7 @@ These are the services described by the dockerfile and docker-compose files:
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/stafli/stafli.base.system/tags/) upon building:
-- Base service:
+- Base:
   - stafli/stafli.base.system:debian8_base
   - stafli/stafli.base.system:debian7_base
   - stafli/stafli.base.system:centos7_base
@@ -34,7 +34,7 @@ These are the [resulting images](https://hub.docker.com/r/stafli/stafli.base.sys
 
 ## Containers
 These containers can be created from the images:
-- Base service:
+- Base:
   - debian8_base_xxx
   - debian7_base_xxx
   - centos7_base_xxx
