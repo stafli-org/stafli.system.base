@@ -1,5 +1,6 @@
 # Stafli Base System
 Stafli Base System builds are based on [Debian](https://www.debian.org/) and [CentOS](https://www.centos.org/), and developed as scripts for [Docker](https://www.docker.com/).  
+Continues on [Stafli Minimal System](https://github.com/stafli-org/stafli.minimal.system) builds.  
 This project is part of the [Stafli Application Stack](https://github.com/stafli-org/).
 
 Requires [Docker Compose](https://docs.docker.com/compose/) 1.6.x or higher due to the [version 2](https://docs.docker.com/compose/compose-file/#versioning) format of the docker-compose.yml files.
@@ -12,17 +13,17 @@ Scripts are also provided for each distribution to help test and deploy the inst
 The images are automatically built at a [repository](https://hub.docker.com/r/stafli/stafli.base.system) in the Docker Hub registry.
 
 ## Distributions
-The services use the official images as a starting point:
-- __Debian__, from the [official repository](https://hub.docker.com/_/debian/)
+The services use custom images as a starting point:
+- __Debian__, from the [Stafli Minimal System](https://github.com/stafli-org/stafli.minimal.system)
   - [Debian 8 (jessie)](../../tree/master/debian8)
   - [Debian 7 (wheezy)](../../tree/master/debian7)
-- __CentOS__, from the [official repository](https://hub.docker.com/_/centos/)
+- __CentOS__, from the [Stafli Minimal System](https://github.com/stafli-org/stafli.minimal.system)
   - [CentOS 7 (centos7)](../../tree/master/centos7)
   - [CentOS 6 (centos6)](../../tree/master/centos6)
 
 ## Services
 These are the services described by the dockerfile and docker-compose files:
-- Base, built on Minimal System and additional daemon packages
+- Base, built on Stafli Minimal System and additional daemon packages
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/stafli/stafli.base.system/tags/) upon building:
