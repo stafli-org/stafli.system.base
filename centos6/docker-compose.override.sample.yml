@@ -23,7 +23,7 @@
 version: '2'
 
 #
-# Overridden services
+# Services
 #
 services:
 

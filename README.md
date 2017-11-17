@@ -63,6 +63,8 @@ docker run -ti stafli/stafli.base.system:debian8_base /bin/bash
 
 ### From GitHub repository (automated)
 
+Note: this method allows using docker-compose and the Makefile.
+
 1. Download the repository [zip file](https://github.com/stafli-org/stafli.base.system/archive/master.zip) and unpack it or clone the repository using:  
 `git clone https://github.com/stafli-org/stafli.base.system.git`
 2. Navigate to the project directory through the terminal:  
@@ -74,17 +76,24 @@ Where <distro> is the distribution/directory and <operation> is the desired dock
 
 Example:
 ```
-git clone https://github.com/stafli-org/stafli.base.system.git
-cd stafli.base.system
-make build DISTRO=debian8
-make netup DISTRO=debian8
-make create DISTRO=debian8
-make start DISTRO=debian8
-make ps DISTRO=debian8
-make stop DISTRO=debian8
-make rm DISTRO=debian8
-make netdown DISTRO=debian8
+git clone https://github.com/stafli-org/stafli.base.system.git;
+cd stafli.base.system;
+
+# Example #1: quick start, with build
+make up DISTRO=debian8;
+
+# Example #2: quick start, with pull
+make img-pull DISTRO=debian8;
+make up DISTRO=debian8;
+
+# Example #3: manual steps, with build
+make img-build DISTRO=debian8;
+make con-create DISTRO=debian8;
+make con-start DISTRO=debian8;
+make con-ls DISTRO=debian8;
 ```
+
+Type `make` in the terminal to discover all the possible commands.
 
 ## Credits
 Stafli Base System  
