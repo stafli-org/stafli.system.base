@@ -35,7 +35,7 @@ source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
 #
 
 # Remove dupplicated services
-yum remove -y dropbear supervisor;
+yum remove -y supervisor;
 
 #
 # Configuration
@@ -44,10 +44,8 @@ yum remove -y dropbear supervisor;
 # Enable daemon
 chkconfig rsyslog on;
 chkconfig crond on;
-chkconfig sshd enable;
 
 # Start daemon
 service rsyslog restart;
 service crond restart;
-service sshd restart;
 

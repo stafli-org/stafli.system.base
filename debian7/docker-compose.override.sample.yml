@@ -30,7 +30,4 @@ services:
   base:
     build:
       args:
-        app_dropbear_listen_port: "10022"
-    ports:
-      - "10022"
 

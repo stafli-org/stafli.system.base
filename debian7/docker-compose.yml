@@ -58,14 +58,8 @@ services:
     build:
       context: "./dockerfiles"
       dockerfile: "base.dockerfile"
-      args:
-        app_dropbear_listen_addr: "0.0.0.0"
-        app_dropbear_listen_port: "22"
-        app_dropbear_key_size: "4096"
     logging:
       driver: "json-file"
-    ports:
-      - "22"
     working_dir: "/tmp"
     command: "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf --nodaemon"
 

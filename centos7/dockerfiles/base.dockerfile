@@ -25,17 +25,12 @@ FROM stafli/stafli.minimal.system:centos7_minimal
 # Arguments
 #
 
-ARG app_dropbear_listen_addr="0.0.0.0"
-ARG app_dropbear_listen_port="22"
-ARG app_dropbear_key_size="4096"
-
 #
 # Packages
 #
 
 # Install daemon and utilities packages
 #  - supervisor: for supervisord, to launch and manage processes
-#  - dropbear: for dropbear, a lightweight SSH2 server and client that replaces OpenSSH
 #  - cronie: for crond, the process scheduling daemon
 #  - cronie-anacron: for anacron, the cron-like program that doesn't go by time
 #  - rsyslog: for rsyslogd, the rocket-fast system for log processing
@@ -44,7 +39,7 @@ RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Install the required packages...\n" && \
     yum makecache && yum install -y \
-      supervisor dropbear \
+      supervisor \
       cronie cronie-anacron \
       rsyslog logrotate && \
     printf "Cleanup the Package Manager...\n" && \
@@ -60,7 +55,6 @@ RUN printf "Installing repositories and packages...\n" && \
 # - Supervisor
 # - Rsyslog
 # - Cron
-# - Dropbear
 RUN printf "Updading Daemon configuration...\n"; \
     \
     printf "Updading Supervisor configuration...\n"; \
@@ -82,7 +76,7 @@ RUN printf "Updading Daemon configuration...\n"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# init\n\
 [program:init]\n\
-command=/bin/bash -c \"supervisorctl start rclocal; supervisorctl start rsyslogd; supervisorctl start crond; sleep 5; supervisorctl start dropbear;\"\n\
+command=/bin/bash -c \"supervisorctl start rclocal; supervisorctl start rsyslogd; supervisorctl start crond;\"\n\
 autostart=true\n\
 autorestart=false\n\
 startsecs=0\n\
@@ -157,74 +151,6 @@ autorestart=true\n\
     \
     # ignoring /etc/sysconfig/crond \
     touch /etc/crontab; \
-    \
-    printf "Updading Dropbear configuration...\n"; \
-    \
-    # /etc/supervisord.d/dropbear.conf \
-    file="/etc/supervisord.d/dropbear.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# Dropbear\n\
-[program:dropbear]\n\
-command=/bin/bash -c \"opts=\$(grep -o '^[^#]*' /etc/dropbear/dropbear.conf) && exec \$(which dropbear) \$opts -F\"\n\
-autostart=false\n\
-autorestart=true\n\
-\n" > ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # ignoring /etc/sysconfig/dropbear \
-    \
-    # /etc/dropbear/dropbear.conf \
-    file="/etc/dropbear/dropbear.conf"; \
-    # clear old file
-    printf "#\n# dropbear.conf\n#\n" > ${file}; \
-    # disable daemon/run in foreground \
-    printf "\n# Run in foreground mode\n#-F\n" >> ${file}; \
-    # change interface and port \
-    printf "\n# Listen on specified address and port (Default: 0.0.0.0:22)\n-p ${app_dropbear_listen_addr}:${app_dropbear_listen_port}\n" >> ${file}; \
-    # change ssh keys \
-    printf "\n# Use the following ssh keys:\n-r /etc/dropbear/dropbear_rsa_host_key\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # Remove persistent ssh keys \
-    printf "\n# Removing persistent ssh keys...\n"; \
-    rm -f /etc/dropbear/*host_key; \
-    \
-    # /etc/rc.local \
-    file="/etc/rc.local"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    perl -0p -i -e "s>\nexit 0>\n# exit 0\n>" ${file}; \
-    printf "\n\
-# Recreate dropbear private keys\n\
-# https://github.com/simonswine/docker-dropbear/blob/master/run.sh\n\
-CONF_DIR=\"/etc/dropbear\";\n\
-SSH_KEY_RSA=\"\${CONF_DIR}/dropbear_rsa_host_key\";\n\
-SSH_KEY_DSS=\"\${CONF_DIR}/dropbear_dss_host_key\";\n\
-SSH_KEY_ECDSA=\"\${CONF_DIR}/dropbear_ecdsa_host_key\";\n\
-\n\
-# Check if conf dir exists\n\
-if [ ! -d \${CONF_DIR} ]; then\n\
-    mkdir -p \${CONF_DIR};\n\
-fi;\n\
-chown root:root \${CONF_DIR};\n\
-chmod 755 \${CONF_DIR};\n\
-\n\
-# Check if keys exists\n\
-if [ ! -f \${SSH_KEY_DSS} ]; then\n\
-    rm -f \${SSH_KEY_DSS};\n\
-fi;\n\
-if [ ! -f \${SSH_KEY_ECDSA} ]; then\n\
-    rm -f \${SSH_KEY_ECDSA};\n\
-fi;\n\
-\n\
-# Generate only the RSA key
-if [ ! -f \${SSH_KEY_RSA} ]; then\n\
-    dropbearkey -t rsa -f \${SSH_KEY_RSA} -s ${app_dropbear_key_size};\n\
-fi;\n\
-chown root:root \${SSH_KEY_RSA};\n\
-chmod 600 \${SSH_KEY_RSA};\n\
-\n\
-exit 0\n" >> ${file}; \
-    printf "Done patching ${file}...\n"; \
     \
     printf "\n# Testing configuration...\n"; \
     echo "Testing $(which supervisord):"; $(which supervisord) -v; \

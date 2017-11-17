@@ -35,7 +35,7 @@ source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
 #
 
 # Remove dupplicated services
-apt-get remove --purge -y dropbear supervisor;
+apt-get remove --purge -y supervisor;
 
 #
 # Configuration
@@ -44,10 +44,8 @@ apt-get remove --purge -y dropbear supervisor;
 # Enable daemon
 systemctl enable rsyslog.service;
 systemctl enable cron.service;
-systemctl enable ssh.service;
 
 # Start daemon
 systemctl restart rsyslog.service;
 systemctl restart cron.service;
-systemctl restart ssh.service;
 
