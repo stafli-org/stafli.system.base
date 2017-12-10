@@ -31,17 +31,12 @@ FROM stafli/stafli.minimal.system:centos7_minimal
 
 # Install daemon and utilities packages
 #  - supervisor: for supervisord, to launch and manage processes
-#  - cronie: for crond, the process scheduling daemon
-#  - cronie-anacron: for anacron, the cron-like program that doesn't go by time
-#  - rsyslog: for rsyslogd, the rocket-fast system for log processing
 #  - logrotate: for logrotate, the log rotation utility
 RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Install the required packages...\n" && \
     yum makecache && yum install -y \
-      supervisor \
-      cronie cronie-anacron \
-      rsyslog logrotate && \
+      supervisor logrotate && \
     printf "Cleanup the Package Manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/*; \
     \
@@ -53,8 +48,6 @@ RUN printf "Installing repositories and packages...\n" && \
 
 # Update daemon configuration
 # - Supervisor
-# - Rsyslog
-# - Cron
 RUN printf "Updading Daemon configuration...\n"; \
     \
     printf "Updading Supervisor configuration...\n"; \
@@ -76,7 +69,7 @@ RUN printf "Updading Daemon configuration...\n"; \
     printf "\n# Applying configuration for ${file}...\n"; \
     printf "# init\n\
 [program:init]\n\
-command=/bin/bash -c \"supervisorctl start rclocal; supervisorctl start rsyslogd; supervisorctl start crond;\"\n\
+command=/bin/bash -c \"supervisorctl start rclocal;\"\n\
 autostart=true\n\
 autorestart=false\n\
 startsecs=0\n\
@@ -99,62 +92,8 @@ startsecs=0\n\
     file="/etc/rc.local"; \
     touch ${file} && chown root ${file} && chmod 755 ${file}; \
     \
-    printf "Updading Rsyslog configuration...\n"; \
-    \
-    # /etc/supervisord.d/rsyslogd.conf \
-    file="/etc/supervisord.d/rsyslogd.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# Rsyslog\n\
-[program:rsyslogd]\n\
-command=/bin/bash -c \"\$(which rsyslogd) -f /etc/rsyslog.conf -n\"\n\
-autostart=false\n\
-autorestart=true\n\
-\n" > ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # ignoring /etc/sysconfig/rsyslog \
-    \
-    # /etc/rsyslog.conf \
-    file="/etc/rsyslog.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    # Disable kernel logging \
-    perl -0p -i -e "s>\\$\\ModLoad imklog>#\\$\\ModLoad imklog>" ${file}; \
-    # Enable socket input and local logging \
-    # http://www.projectatomic.io/blog/2014/09/running-syslog-within-a-docker-container/ \
-    perl -0p -i -e "s>#\\$\\ModLoad imuxsock>\\$\\ModLoad imuxsock>" ${file}; \
-    perl -0p -i -e "s>\\$\\OmitLocalLogging on>\\$\\OmitLocalLogging off>" ${file}; \
-    # Disable systemd (journald) logging \
-    # http://www.projectatomic.io/blog/2014/09/running-syslog-within-a-docker-container/ \
-    perl -0p -i -e "s>\\$\\ModLoad imjournal>#\\$\\ModLoad imjournal>" ${file}; \
-    perl -0p -i -e "s>\\$\\IMJournalStateFile>#\\$\\IMJournalStateFile>" ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # /etc/rsyslog.d/listen.conf \
-    file="/etc/rsyslog.d/listen.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    # Disable systemd (journald) logging \
-    perl -0p -i -e "s>\\$\\SystemLogSocketName>#\\$\\SystemLogSocketName>" ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    printf "Updading Cron configuration...\n"; \
-    \
-    # /etc/supervisord.d/crond.conf \
-    file="/etc/supervisord.d/crond.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# Cron\n\
-[program:crond]\n\
-command=/bin/bash -c \"\$(which crond) -n\"\n\
-autostart=false\n\
-autorestart=true\n\
-\n" > ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # ignoring /etc/sysconfig/crond \
-    touch /etc/crontab; \
-    \
     printf "\n# Testing configuration...\n"; \
     echo "Testing $(which supervisord):"; $(which supervisord) -v; \
-    echo "Testing $(which rsyslogd):"; $(which rsyslogd) -v; \
     printf "Done testing configuration...\n"; \
     \
     printf "Finished Daemon configuration...\n";

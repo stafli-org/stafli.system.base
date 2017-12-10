@@ -37,15 +37,3 @@ source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
 # Remove dupplicated services
 yum remove -y supervisor;
 
-#
-# Configuration
-#
-
-# Enable daemon
-chkconfig rsyslog on;
-chkconfig crond on;
-
-# Start daemon
-service rsyslog restart;
-service crond restart;
-

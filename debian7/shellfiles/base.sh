@@ -37,15 +37,3 @@ source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
 # Remove dupplicated services
 apt-get remove --purge -y supervisor;
 
-#
-# Configuration
-#
-
-# Enable daemon
-update-rc.d rsyslog enable;
-update-rc.d cron enable;
-
-# Start daemon
-service rsyslog restart;
-service cron restart;
-
