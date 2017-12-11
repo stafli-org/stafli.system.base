@@ -1,6 +1,6 @@
 
 #
-#    Debian 8 (jessie) Base System (dockerfile)
+#    Debian 8 (jessie) Base10 System (dockerfile)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-FROM stafli/stafli.minimal.system:debian8_minimal
+FROM stafli/stafli.system.minimal:minimal10_debian8
 
 #
 # Arguments

@@ -1,6 +1,6 @@
 
 #
-#    CentOS 6 (centos6) Base System (dockerfile)
+#    CentOS 6 (centos6) Base10 System (dockerfile)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-FROM stafli/stafli.minimal.system:centos6_minimal
+FROM stafli/stafli.system.minimal:minimal10_centos6
 
 #
 # Arguments

@@ -1,6 +1,6 @@
 ---
 #
-#    Debian 7 (wheezy) Base System (docker-compose.override.sample.yml)
+#    Debian 7 (wheezy) Base10 System (docker-compose.override.sample.yml)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
@@ -27,7 +27,7 @@ version: '2'
 #
 services:
 
-  debian7_base_system:
+  system_base10_debian7:
     build:
       args:
 

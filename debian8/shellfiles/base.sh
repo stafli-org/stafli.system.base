@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    Debian 8 (jessie) Base System (shellscript)
+#    Debian 8 (jessie) Base10 System (shellscript)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
