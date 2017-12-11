@@ -27,7 +27,7 @@ version: '2'
 #
 services:
 
-  base:
+  debian8_base_system:
     labels:
       - "org.label-schema.schema-version=1.0"
       - "org.label-schema.name=$PROJECT_NAME"
@@ -54,7 +54,7 @@ services:
       - "org.label-schema.os-architecture=$BUILD_ARCH"
       - "org.label-schema.version=$BUILD_VERSION"
       - "org.label-schema.build-date=$BUILD_DATE"
-    image: "stafli/stafli.base.system:debian8_base"
+    image: "${IMAGE_URL_PREFIX}:debian8_base"
     build:
       context: "./dockerfiles"
       dockerfile: "base.dockerfile"

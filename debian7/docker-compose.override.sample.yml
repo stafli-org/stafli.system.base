@@ -27,7 +27,7 @@ version: '2'
 #
 services:
 
-  base:
+  debian7_base_system:
     build:
       args:
 

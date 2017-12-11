@@ -27,7 +27,7 @@ version: '2'
 #
 services:
 
-  base:
+  centos7_base_system:
     build:
       args:
 
