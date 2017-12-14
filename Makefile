@@ -1,3 +1,4 @@
+#!make
 #
 #    Stafli Base System (Makefile)
 #    Copyright (C) 2016-2017 Stafli
@@ -18,16 +19,39 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# Load envfile
+include .env
+export $(shell sed 's/=.*//' .env)
+
+# Format variables
+IMAGE_URL_PREFIX := $(shell echo $(IMAGE_URL_PREFIX))
+IMAGE_TAG_PREFIX := $(shell echo $(IMAGE_TAG_PREFIX))
+CONTAINER_URL_PREFIX := $(shell echo $(CONTAINER_URL_PREFIX))
+DISTRO_DEBIAN8_VERSION := $(shell echo $(DISTRO_DEBIAN8_VERSION))
+DISTRO_DEBIAN7_VERSION := $(shell echo $(DISTRO_DEBIAN7_VERSION))
+DISTRO_CENTOS7_VERSION := $(shell echo $(DISTRO_CENTOS7_VERSION))
+DISTRO_CENTOS6_VERSION := $(shell echo $(DISTRO_CENTOS6_VERSION))
+PROJECT_NAME := $(shell echo $(PROJECT_NAME))
+
 # If distro is not provided, default to all
 ifndef DISTRO
 	DISTRO:=all
+endif
+
+# Set list of distros
+ifeq ($(DISTRO), all)
+	DISTROS:=debian8 debian7 centos7 centos6
+else
+	DISTROS:=$(DISTRO)
 endif
 
 all: help
 
 help:
 	@echo "\
-Stafli Base System\n\
+===============================================================================\n\
+$$PROJECT_NAME\n\
+===============================================================================\n\
 \n\
 Syntax:\n\
 make <command> DISTRO=<distribution>\n\
@@ -87,468 +111,287 @@ Example #3: manual steps, with build\n\
 
 up:
 	@echo
-	@echo Building images and creates and starts containers, networks and volumes...
+	@echo Building images and creating and starting containers, networks and volumes...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Building images and creates and starts containers, networks and volumes for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose up)";
-		@echo
-		@echo Building images and creates and starts containers, networks and volumes for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose up)";
-		@echo
-		@echo Building images and creates and starts containers, networks and volumes for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose up)";
-		@echo
-		@echo Building images and creates and starts containers, networks and volumes for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose up)";
-        else
-		@echo Building images and creates and starts containers, networks and volumes for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose up)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Building images and creates and starts containers, networks and volumes for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose up)"; \
+	done
 
 
 down:
 	@echo
 	@echo Stopping and removes containers and networks....
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Stopping and removes containers and networks for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		@echo
-		@echo Stopping and removes containers and networks for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		@echo
-		@echo Stopping and removes containers and networks for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		@echo
-		@echo Stopping and removes containers and networks for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose down)";
-        else
-		@echo Stopping and removes containers and networks for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose down)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Stopping and removes containers and networks for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose down)"; \
+	done
 
 
 purge:
 	@echo
 	@echo Purging containers, networks, volumes and images....
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Purging containers, networks, volumes and images for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker image rm stafli/stafli.system.base:base10_debian8;
-		@echo
-		@echo Purging containers, networks, volumes and images for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker image rm stafli/stafli.system.base:base10_debian7;
-		@echo
-		@echo Purging containers, networks, volumes and images for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker image rm stafli/stafli.system.base:base10_centos7;
-		@echo
-		@echo Purging containers, networks, volumes and images for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker image rm stafli/stafli.system.base:base10_centos6;
-        else
-		@echo Purging containers, networks, volumes and images for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose down)";
-		docker image rm stafli/stafli.system.base:base10_$(DISTRO);
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		if [ $$DISTRO_INDEX = "debian8" ]; then \
+			VERSION=$(DISTRO_DEBIAN8_VERSION); \
+		elif [ $$DISTRO_INDEX = "debian7" ]; then \
+			VERSION=$(DISTRO_DEBIAN7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos7" ]; then \
+			VERSION=$(DISTRO_CENTOS7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos6" ]; then \
+			VERSION=$(DISTRO_CENTOS6_VERSION); \
+		fi; \
+		echo; \
+		echo Purging containers, networks, volumes and images for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose down)"; \
+		docker image rm $(IMAGE_URL_PREFIX):$(IMAGE_TAG_PREFIX)$$VERSION"_"$$DISTRO_INDEX; \
+	done
 
 
 img-ls:
 	@echo
 	@echo Listing images...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Listing images for debian8...
-		docker image ls | grep -E "stafli/stafli.system.base.*debian8" | sort -n;
-		@echo
-		@echo Listing images for debian7...
-		docker image ls | grep -E "stafli/stafli.system.base.*debian7" | sort -n;
-		@echo
-		@echo Listing images for centos7...
-		docker image ls | grep -E "stafli/stafli.system.base.*centos7" | sort -n;
-		@echo
-		@echo Listing images for centos6...
-		docker image ls | grep -E "stafli/stafli.system.base.*centos6" | sort -n;
-        else
-		@echo Listing images for $(DISTRO)...
-		docker image ls | grep -E "stafli/stafli.system.base.*$(DISTRO)" | sort -n;
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Listing images for $$DISTRO_INDEX...; \
+		docker image ls | grep -E $(IMAGE_URL_PREFIX).*$$DISTRO_INDEX | sort -n; \
+	done
 
 
 img-build:
 	@echo
 	@echo Building images...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Building images for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose build)";
-		@echo
-		@echo Building images for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose build)";
-		@echo
-		@echo Building images for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose build)";
-		@echo
-		@echo Building images for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose build)";
-        else
-		@echo Building images for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose build)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Building images for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose build)"; \
+	done
 
 
 img-pull:
 	@echo
 	@echo Pulling images...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Pulling images for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose pull)";
-		@echo
-		@echo Pulling images for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose pull)";
-		@echo
-		@echo Pulling images for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose pull)";
-		@echo
-		@echo Pulling images for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose pull)";
-        else
-		@echo Pulling images for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose pull)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Building images for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose pull)"; \
+	done
 
 
 img-rm:
 	@echo
 	@echo Removing images...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Removing images for debian8...
-		docker image rm stafli/stafli.system.base:base10_debian8;
-		@echo
-		@echo Removing images for debian7...
-		docker image rm stafli/stafli.system.base:base10_debian7;
-		@echo
-		@echo Removing images for centos7...
-		docker image rm stafli/stafli.system.base:base10_centos7;
-		@echo
-		@echo Removing images for centos6...
-		docker image rm stafli/stafli.system.base:base10_centos6;
-        else
-		@echo Removing images for $(DISTRO)...
-		docker image rm stafli/stafli.system.base:base10_$(DISTRO);
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		if [ $$DISTRO_INDEX = "debian8" ]; then \
+			VERSION=$(DISTRO_DEBIAN8_VERSION); \
+		elif [ $$DISTRO_INDEX = "debian7" ]; then \
+			VERSION=$(DISTRO_DEBIAN7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos7" ]; then \
+			VERSION=$(DISTRO_CENTOS7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos6" ]; then \
+			VERSION=$(DISTRO_CENTOS6_VERSION); \
+		fi; \
+		echo; \
+		echo Removing images for $$DISTRO_INDEX...; \
+		docker image rm $(IMAGE_URL_PREFIX):$(IMAGE_TAG_PREFIX)$$VERSION"_"$$DISTRO_INDEX; \
+	done
 
 
 con-ls:
 	@echo
 	@echo Showing containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Showing containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose ps)";
-		@echo
-		@echo Showing containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose ps)";
-		@echo
-		@echo Showing containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose ps)";
-		@echo
-		@echo Showing containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose ps)";
-        else
-		@echo Showing containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose ps)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Showing containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose ps)"; \
+	done
 
 
 con-create:
 	@echo
 	@echo Creating containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Creating containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose create)";
-		@echo
-		@echo Creating containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose create)";
-		@echo
-		@echo Creating containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose create)";
-		@echo
-		@echo Creating containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose create)";
-        else
-		@echo Creating containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose create)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Creating containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose create)"; \
+	done
 
 
 con-rm:
 	@echo
 	@echo Removing containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Removing containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose rm)";
-		@echo
-		@echo Removing containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose rm)";
-		@echo
-		@echo Removing containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose rm)";
-		@echo
-		@echo Removing containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose rm)";
-        else
-		@echo Removing containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose rm)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Removing containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose rm)"; \
+	done
 
 
 con-start:
 	@echo
 	@echo Starting containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Starting containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose start)";
-		@echo
-		@echo Starting containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose start)";
-		@echo
-		@echo Starting containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose start)";
-		@echo
-		@echo Starting containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose start)";
-        else
-		@echo Starting containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose start)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Starting containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose start)"; \
+	done
 
 
 con-stop:
 	@echo
 	@echo Stoping containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Stoping containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose stop)";
-		@echo
-		@echo Stoping containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose stop)";
-		@echo
-		@echo Stoping containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose stop)";
-		@echo
-		@echo Stoping containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose stop)";
-        else
-		@echo Stoping containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose stop)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Stoping containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose stop)"; \
+	done
 
 
 con-restart:
 	@echo
 	@echo Restarting containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Restarting containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose restart)";
-		@echo
-		@echo Restarting containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose restart)";
-		@echo
-		@echo Restarting containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose restart)";
-		@echo
-		@echo Restarting containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose restart)";
-        else
-		@echo Restarting containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose restart)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Restarting containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose restart)"; \
+	done
 
 
 con-pause:
 	@echo
 	@echo Pausing containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Pausing containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose pause)";
-		@echo
-		@echo Pausing containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose pause)";
-		@echo
-		@echo Pausing containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose pause)";
-		@echo
-		@echo Pausing containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose pause)";
-        else
-		@echo Pausing containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose pause)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Pausing containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose pause)"; \
+	done
 
 
 con-unpause:
 	@echo
 	@echo Unpausing containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Unpausing containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose unpause)";
-		@echo
-		@echo Unpausing containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose unpause)";
-		@echo
-		@echo Unpausing containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose unpause)";
-		@echo
-		@echo Unpausing containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose unpause)";
-        else
-		@echo Unpausing containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose unpause)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Unpausing containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose unpause)"; \
+	done
 
 
 con-inspect:
 	@echo
 	@echo Inspecting containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Inspecting containers for debian8...
-		docker container inspect stafli_system_base10_debian8_1;
-		@echo
-		@echo Inspecting containers for debian7...
-		docker container inspect stafli_system_base10_debian7_1;
-		@echo
-		@echo Inspecting containers for centos7...
-		docker container inspect stafli_system_base10_centos7_1;
-		@echo
-		@echo Inspecting containers for centos6...
-		docker container inspect stafli_system_base10_centos6_1;
-        else
-		@echo Inspecting containers for $(DISTRO)...
-		docker container inspect stafli_system_base10_$(DISTRO)_1;
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		if [ $$DISTRO_INDEX = "debian8" ]; then \
+			VERSION=$(DISTRO_DEBIAN8_VERSION); \
+		elif [ $$DISTRO_INDEX = "debian7" ]; then \
+			VERSION=$(DISTRO_DEBIAN7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos7" ]; then \
+			VERSION=$(DISTRO_CENTOS7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos6" ]; then \
+			VERSION=$(DISTRO_CENTOS6_VERSION); \
+		fi; \
+		echo; \
+		echo Inspecting containers for $$DISTRO_INDEX...; \
+		docker container inspect $(CONTAINER_URL_PREFIX)$$VERSION"_"$$DISTRO_INDEX"_1"; \
+	done
 
 con-ips:
 	@echo
 	@echo Showing IP addresses of containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Showing IP addresses of containers for debian8...
-		docker container inspect stafli_system_base10_debian8_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
-		@echo
-		@echo Showing IP addresses of containers for debian7...
-		docker container inspect stafli_system_base10_debian7_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
-		@echo
-		@echo Showing IP addresses of containers for centos7...
-		docker container inspect stafli_system_base10_centos7_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
-		@echo
-		@echo Showing IP addresses of containers for centos6...
-		docker container inspect stafli_system_base10_centos6_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
-        else
-		@echo Showing IP addresses of containers for $(DISTRO)...
-		docker container inspect stafli_system_base10_$(DISTRO)_1 | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8;
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		if [ $$DISTRO_INDEX = "debian8" ]; then \
+			VERSION=$(DISTRO_DEBIAN8_VERSION); \
+		elif [ $$DISTRO_INDEX = "debian7" ]; then \
+			VERSION=$(DISTRO_DEBIAN7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos7" ]; then \
+			VERSION=$(DISTRO_CENTOS7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos6" ]; then \
+			VERSION=$(DISTRO_CENTOS6_VERSION); \
+		fi; \
+		echo; \
+		echo Showing IP addresses of container for $$DISTRO_INDEX...; \
+		docker container inspect $(CONTAINER_URL_PREFIX)$$VERSION"_"$$DISTRO_INDEX"_1" | grep -e "inspect" -e "\"NetworkID\"" -B 0 -A 8; \
+	done
 
 
 con-ports:
 	@echo
 	@echo Showing ports of containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Showing ports of containers for debian8...
-		docker container port stafli_system_base10_debian8_1;
-		@echo
-		@echo Showing ports of containers for debian7...
-		docker container port stafli_system_base10_debian7_1;
-		@echo
-		@echo Showing ports of containers for centos7...
-		docker container port stafli_system_base10_centos7_1;
-		@echo
-		@echo Showing ports of containers for centos6...
-		docker container port stafli_system_base10_centos6_1;
-        else
-		@echo Showing ports of containers for $(DISTRO)...
-		docker container port stafli_system_base10_$(DISTRO)_1;
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		if [ $$DISTRO_INDEX = "debian8" ]; then \
+			VERSION=$(DISTRO_DEBIAN8_VERSION); \
+		elif [ $$DISTRO_INDEX = "debian7" ]; then \
+			VERSION=$(DISTRO_DEBIAN7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos7" ]; then \
+			VERSION=$(DISTRO_CENTOS7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos6" ]; then \
+			VERSION=$(DISTRO_CENTOS6_VERSION); \
+		fi; \
+		echo; \
+		echo Showing ports of containers for $$DISTRO_INDEX...; \
+		docker container port $(CONTAINER_URL_PREFIX)$$VERSION"_"$$DISTRO_INDEX"_1"; \
+	done
 
 
 con-top:
 	@echo
 	@echo Showing processes of containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Showing processes of containers for debian8...
-		docker container top stafli_system_base10_debian8_1;
-		@echo
-		@echo Showing processes of containers for debian7...
-		docker container top stafli_system_base10_debian7_1;
-		@echo
-		@echo Showing processes of containers for centos7...
-		docker container top stafli_system_base10_centos7_1;
-		@echo
-		@echo Showing processes of containers for centos6...
-		docker container top stafli_system_base10_centos6_1;
-        else
-		@echo Showing processes of containers for $(DISTRO)...
-		docker container top stafli_system_base10_$(DISTRO)_1;
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		if [ $$DISTRO_INDEX = "debian8" ]; then \
+			VERSION=$(DISTRO_DEBIAN8_VERSION); \
+		elif [ $$DISTRO_INDEX = "debian7" ]; then \
+			VERSION=$(DISTRO_DEBIAN7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos7" ]; then \
+			VERSION=$(DISTRO_CENTOS7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos6" ]; then \
+			VERSION=$(DISTRO_CENTOS6_VERSION); \
+		fi; \
+		echo; \
+		echo Showing processes of containers for $$DISTRO_INDEX...; \
+		docker container top $(CONTAINER_URL_PREFIX)$$VERSION"_"$$DISTRO_INDEX"_1"; \
+	done
 
 
 con-logs:
 	@echo
 	@echo Showing logs of containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Showing logs of containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose logs)";
-		@echo
-		@echo Showing logs of containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose logs)";
-		@echo
-		@echo Showing logs of containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose logs)";
-		@echo
-		@echo Showing logs of containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose logs)";
-        else
-		@echo Showing logs of containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose logs)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Showing logs of containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose logs)"; \
+	done
 
 
 con-events:
 	@echo
 	@echo Showing events of containers...
 	@echo
-        ifeq ($(DISTRO), all)
-		@echo Showing events of containers for debian8...
-		bash -c "(cd debian8; set -o allexport; source .env; set +o allexport; docker-compose events)";
-		@echo
-		@echo Showing events of containers for debian7...
-		bash -c "(cd debian7; set -o allexport; source .env; set +o allexport; docker-compose events)";
-		@echo
-		@echo Showing events of containers for centos7...
-		bash -c "(cd centos7; set -o allexport; source .env; set +o allexport; docker-compose events)";
-		@echo
-		@echo Showing events of containers for centos6...
-		bash -c "(cd centos6; set -o allexport; source .env; set +o allexport; docker-compose events)";
-        else
-		@echo Showing events of containers for $(DISTRO)...
-		bash -c "(cd $(DISTRO); set -o allexport; source .env; set +o allexport; docker-compose events)";
-        endif
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Showing events of containers for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose events)"; \
+	done
 
 
 .SILENT: help
