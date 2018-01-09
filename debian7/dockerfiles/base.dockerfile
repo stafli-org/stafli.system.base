@@ -70,14 +70,63 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 # Packages
 #
 
+# Install crypto packages
+#  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
+#  - ca-certificates: adds trusted PEM files of CA certificates to the system
+#  - gpgv: for gpgv, the GNU privacy guard signature verification tool
+# Install base packages
+#  - mime-support: to provide mime support
+# Install administration packages
+#  - htop: for htop, an interactive process viewer
+#  - iotop: for iotop, a simple top-like I/O monitor
+#  - iftop: for iftop, a simple top-like network monitor
+# Install programming packages
+#  - bc: for bc, the GNU bc arbitrary precision calculator language
+#  - mawk: for awk, a faster interpreter for the AWK Programming Language
+# Install find and revision control packages
+#  - file: for file. retrieves information about files
+#  - tree: for tree, displays directory tree, in color
+#  - diffutils: for diff, the file comparison utility
+# Install archive and compression packages
+#  - bzip2: for bzip2, a compression utility, which uses the Burrows–Wheeler algorithm
+#  - zip: for zip, the InfoZip compression utility which uses various ZIP algorithms
+#  - unzip: for unzip, the InfoZip decompression utility which uses various ZIP algorithms
+#  - xz-utils: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
+# Install network diagnosis packages
+#  - iproute: for ip and others, the newer tools for routing and network configuration
+#  - iputils-tracepath: for traceroute/6, tools to trace the network path to a remote host
+#  - dnsutils: for nslookup and dig, the BIND DNS client programs
+# Install network transfer packages
+#  - wget: for wget, a network utility to download via FTP and HTTP protocols
+#  - httpie: for HTTPie, a CLI HTTP utility that makes CLI interaction with HTTP-based services as human-friendly as possible
+#  - rsync: for rsync, a fast and versatile remote (and local) file-copying tool
+#  - openssh-client: for ssh, a free client implementation of the Secure Shell protocol
+# Install misc packages
+#  - bash-completion: to add programmable completion for the bash shell
+#  - pwgen: for pwgen, the automatic password generation tool
+#  - dialog: for dialog, to provide prompts for the bash shell
+#  - screen: for screen, the terminal multiplexer with VT100/ANSI terminal emulation
+#  - byobu: for byobu, a text window manager, shell multiplexer and integrated DevOps environment
 # Install daemon and utilities packages
 #  - supervisor: for supervisord, to launch and manage processes
-#  - logrotate: for logrotate, the log rotation utility
 RUN printf "Installing repositories and packages...\n" && \
+    \
+    printf "Install the Package Manager related packages...\n" && \
+    apt-get update && apt-get install -qy \
+      openssl ca-certificates gpgv && \
     \
     printf "Install the required packages...\n" && \
     apt-get update && apt-get install -qy \
-      supervisor logrotate && \
+      mime-support \
+      htop iotop iftop \
+      bc mawk \
+      file tree diffutils \
+      bzip2 zip unzip xz-utils \
+      iproute iputils-tracepath dnsutils \
+      wget httpie rsync openssh-client \
+      bash-completion pwgen dialog screen byobu \
+      supervisor && \
+    \
     printf "# Cleanup the Package Manager...\n" && \
     apt-get clean && rm -rf /var/lib/apt/lists/*; \
     \
