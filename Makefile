@@ -71,7 +71,9 @@ Available commands:\n\
   - img-ls:		Lists images, using docker, using docker.\n\
   - img-build:		Builds images from dockerfiles, using docker-compose.\n\
   - img-pull:		Pulls images from repository, using docker-compose.\n\
+  - img-push:		Pushes images to repository, using docker-compose.\n\
   - img-rm:		Removes images, using docker.\n\
+  - img-inspect:	Inspects images, using docker.\n\
 - for containers:\n\
   - con-ls:		Lists containers, using docker-compose.\n\
   - con-create:		Creates containers, using docker-compose.\n\
@@ -180,8 +182,19 @@ img-pull:
 	@echo
 	@for DISTRO_INDEX in $(DISTROS); do \
 		echo; \
-		echo Building images for $$DISTRO_INDEX...; \
+		echo Pulling images for $$DISTRO_INDEX...; \
 		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose pull)"; \
+	done
+
+
+img-push:
+	@echo
+	@echo Pushing images...
+	@echo
+	@for DISTRO_INDEX in $(DISTROS); do \
+		echo; \
+		echo Pushing images for $$DISTRO_INDEX...; \
+		bash -c "(cd $$DISTRO_INDEX; set -o allexport; source .env; set +o allexport; docker-compose push)"; \
 	done
 
 
@@ -202,6 +215,26 @@ img-rm:
 		echo; \
 		echo Removing images for $$DISTRO_INDEX...; \
 		docker image rm $(IMAGE_URL_PREFIX):$(IMAGE_TAG_PREFIX)$$VERSION"_"$$DISTRO_INDEX; \
+	done
+
+
+img-inspect:
+	@echo
+	@echo Inspecting images...
+	@echo
+	@for DISTRO_INDEX in $(DISTROS); do \
+		if [ $$DISTRO_INDEX = "debian8" ]; then \
+			VERSION=$(DISTRO_DEBIAN8_VERSION); \
+		elif [ $$DISTRO_INDEX = "debian7" ]; then \
+			VERSION=$(DISTRO_DEBIAN7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos7" ]; then \
+			VERSION=$(DISTRO_CENTOS7_VERSION); \
+		elif [ $$DISTRO_INDEX = "centos6" ]; then \
+			VERSION=$(DISTRO_CENTOS6_VERSION); \
+		fi; \
+		echo; \
+		echo Inspecting images for $$DISTRO_INDEX...; \
+		docker image inspect $(IMAGE_URL_PREFIX):$(IMAGE_TAG_PREFIX)$$VERSION"_"$$DISTRO_INDEX; \
 	done
 
 
