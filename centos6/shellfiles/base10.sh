@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    CentOS 7 (centos7) Base10 System (shellscript)
+#    CentOS 6 (centos6) Base10 System (shellscript)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
@@ -33,5 +33,5 @@ shopt -s expand_aliases;
 source $(dirname "${BASH_SOURCE[0]}")/../.env;
 
 # Load dockerfile
-source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
+source "$(dirname $(readlink -f $0))/../dockerfiles/${IMAGE_TAG_PREFIX}${DISTRO_CENTOS6_VERSION}.dockerfile";
 

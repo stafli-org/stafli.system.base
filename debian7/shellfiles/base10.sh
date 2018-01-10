@@ -33,5 +33,5 @@ shopt -s expand_aliases;
 source $(dirname "${BASH_SOURCE[0]}")/../.env;
 
 # Load dockerfile
-source "$(dirname $(readlink -f $0))/../dockerfiles/base.dockerfile";
+source "$(dirname $(readlink -f $0))/../dockerfiles/${IMAGE_TAG_PREFIX}${DISTRO_DEBIAN7_VERSION}.dockerfile";
 

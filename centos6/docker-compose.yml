@@ -56,7 +56,7 @@ services:
     image: "${IMAGE_URL_PREFIX}:${IMAGE_TAG_PREFIX}${DISTRO_CENTOS6_VERSION}_${OS_RELEASE_ID}"
     build:
       context: "./dockerfiles"
-      dockerfile: "base.dockerfile"
+      dockerfile: "${IMAGE_TAG_PREFIX}${DISTRO_CENTOS6_VERSION}.dockerfile"
     logging:
       driver: "json-file"
     working_dir: "/tmp"
