@@ -23,7 +23,7 @@ The services use custom images as a starting point for the following distributio
 
 ## Services
 These are the services described by the dockerfile and docker-compose files:
-- Base 1.0.x, built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional non-essential packages and supervisord
+- Base 1.0.x, built on [Stafli Minimal System](https://github.com/stafli-org/stafli.system.minimal) and additional non-essential packages
 
 ## Images
 These are the [resulting images](https://hub.docker.com/r/stafli/stafli.system.base/tags) upon building:

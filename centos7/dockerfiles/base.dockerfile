@@ -42,8 +42,8 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
       org.label-schema.authors.lpalgarvio.email="lp@algarvio.org" \
       org.label-schema.authors.lpalgarvio.homepage="https://lp.algarvio.org" \
       org.label-schema.authors.lpalgarvio.role="Maintainer" \
-      org.label-schema.registry-url="https://hub.docker.com/r/stafli/stafli.system.devel" \
-      org.label-schema.vcs-url="https://github.com/stafli-org/stafli.system.devel" \
+      org.label-schema.registry-url="https://hub.docker.com/r/stafli/stafli.system.base" \
+      org.label-schema.vcs-url="https://github.com/stafli-org/stafli.system.base" \
       org.label-schema.vcs-branch="master" \
       org.label-schema.os-id="centos" \
       org.label-schema.os-version-id="7" \
@@ -109,8 +109,6 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #  - dialog: for dialog, to provide prompts for the bash shell
 #  - screen: for screen, the terminal multiplexer with VT100/ANSI terminal emulation
 #  - byobu: for byobu, a text window manager, shell multiplexer and integrated DevOps environment
-# Install daemon and utilities packages
-#  - supervisor: for supervisord, to launch and manage processes
 RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Install the Package Manager related packages...\n" && \
@@ -127,8 +125,7 @@ RUN printf "Installing repositories and packages...\n" && \
       bzip2 zip unzip xz \
       iproute traceroute bind-utils \
       wget httpie rsync openssh-clients \
-      bash-completion pwgen dialog screen byobu \
-      supervisor && \
+      bash-completion pwgen dialog screen byobu && \
     \
     printf "Cleanup the Package Manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/* && \
@@ -138,58 +135,6 @@ RUN printf "Installing repositories and packages...\n" && \
 #
 # Configuration
 #
-
-# Update daemon configuration
-# - Supervisor
-RUN printf "Updading Daemon configuration...\n"; \
-    \
-    printf "Updading Supervisor configuration...\n"; \
-    mkdir -p /var/log/supervisor; \
-    \
-    # ignoring /etc/sysconfig/supervisor \
-    \
-    # /etc/supervisord.conf \
-    file="/etc/supervisord.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    perl -0p -i -e "s>nodaemon=false>nodaemon=true>" ${file}; \
-    perl -0p -i -e "s>\[unix_http_server\]\nfile=.*>\[unix_http_server\]\nfile=/dev/shm/supervisor.sock>" ${file}; \
-    perl -0p -i -e "s>\[supervisorctl\]\nserverurl=.*>\[supervisorctl\]\nserverurl=unix:///dev/shm/supervisor.sock>" ${file}; \
-    perl -0p -i -e "s>files = supervisord.d/\*\.ini>files = supervisord.d/*.ini\nfiles = supervisord.d/*.conf\n>" ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # /etc/supervisord.d/init.conf \
-    file="/etc/supervisord.d/init.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# init\n\
-[program:init]\n\
-command=/bin/bash -c \"supervisorctl start rclocal;\"\n\
-autostart=true\n\
-autorestart=false\n\
-startsecs=0\n\
-\n" > ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # /etc/supervisord.d/rclocal.conf \
-    file="/etc/supervisord.d/rclocal.conf"; \
-    printf "\n# Applying configuration for ${file}...\n"; \
-    printf "# rclocal\n\
-[program:rclocal]\n\
-command=/bin/bash -c \"/etc/rc.local\"\n\
-autostart=false\n\
-autorestart=false\n\
-startsecs=0\n\
-\n" > ${file}; \
-    printf "Done patching ${file}...\n"; \
-    \
-    # /etc/rc.local \
-    file="/etc/rc.local"; \
-    touch ${file} && chown root ${file} && chmod 755 ${file}; \
-    \
-    printf "\n# Testing configuration...\n"; \
-    echo "Testing $(which supervisord):"; $(which supervisord) -v; \
-    printf "Done testing configuration...\n"; \
-    \
-    printf "Finished Daemon configuration...\n";
 
 #
 # Run
