@@ -53,7 +53,7 @@ services:
       - "org.label-schema.os-architecture=$BUILD_ARCH"
       - "org.label-schema.version=$BUILD_VERSION"
       - "org.label-schema.build-date=$BUILD_DATE"
-    image: "${IMAGE_URL_PREFIX}:base10_${OS_RELEASE_ID}"
+    image: "${IMAGE_URL_PREFIX}:${IMAGE_TAG_PREFIX}${DISTRO_CENTOS6_VERSION}_${OS_RELEASE_ID}"
     build:
       context: "./dockerfiles"
       dockerfile: "base.dockerfile"

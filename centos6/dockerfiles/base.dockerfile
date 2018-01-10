@@ -145,3 +145,7 @@ RUN printf "Installing repositories and packages...\n" && \
 # Defaults to /bin/bash.
 #CMD ["/bin/bash"]
 
+# Ports to expose
+# Defaults to none.
+#EXPOSE ...
+
