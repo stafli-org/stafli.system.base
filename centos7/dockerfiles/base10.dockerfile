@@ -70,12 +70,7 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 # Packages
 #
 
-# Install Package Manager related packages
-#  - yum-utils: to provide additional utilities such as package-cleanup in yum
-#  - yum-plugin-keys: to provide key signing capabilities to yum
-# Install crypto packages
-#  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
-#  - ca-certificates: adds trusted PEM files of CA certificates to the system
+# Refresh the GPG keys
 # Install base packages
 #  - mailcap: to provide mime support
 # Install administration packages
@@ -103,6 +98,9 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #  - httpie: for HTTPie, a CLI HTTP utility that makes CLI interaction with HTTP-based services as human-friendly as possible
 #  - rsync: for rsync, a fast and versatile remote (and local) file-copying tool
 #  - openssh-clients: for ssh, a free client implementation of the Secure Shell protocol
+# Install crypto packages
+#  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
+#  - ca-certificates: adds trusted PEM files of CA certificates to the system
 # Install misc packages
 #  - bash-completion: to add programmable completion for the bash shell
 #  - pwgen: for pwgen, the automatic password generation tool
@@ -111,12 +109,10 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #  - byobu: for byobu, a text window manager, shell multiplexer and integrated DevOps environment
 RUN printf "Installing repositories and packages...\n" && \
     \
-    printf "Install the Package Manager related packages...\n" && \
-    yum makecache && yum install -y \
-      openssl ca-certificates \
-      yum-utils yum-plugin-keys && \
+    printf "Refresh the GPG keys...\n" && \
+    gpg --refresh-keys && \
     \
-    printf "Install the required packages...\n" && \
+    printf "Install the selected packages...\n" && \
     yum makecache && yum install -y \
       mailcap \
       htop iotop iftop \
@@ -125,9 +121,10 @@ RUN printf "Installing repositories and packages...\n" && \
       bzip2 zip unzip xz \
       iproute traceroute bind-utils \
       wget httpie rsync openssh-clients \
+      openssl ca-certificates \
       bash-completion pwgen dialog screen byobu && \
     \
-    printf "Cleanup the Package Manager...\n" && \
+    printf "Cleanup the package manager...\n" && \
     yum clean all && rm -Rf /var/lib/yum/* && \
     \
     printf "Finished installing repositories and packages...\n";

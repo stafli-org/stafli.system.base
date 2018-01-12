@@ -70,10 +70,7 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 # Packages
 #
 
-# Install crypto packages
-#  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
-#  - ca-certificates: adds trusted PEM files of CA certificates to the system
-#  - gpgv: for gpgv, the GNU privacy guard signature verification tool
+# Refresh the APT and GPG keys
 # Install base packages
 #  - mime-support: to provide mime support
 # Install administration packages
@@ -94,6 +91,7 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #  - xz-utils: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
 # Install network diagnosis packages
 #  - iproute2: for ip and others, the newer tools for routing and network configuration
+#  - iputils-ping: for ping/6, tools to test the reachability of network hosts
 #  - iputils-tracepath: for traceroute/6, tools to trace the network path to a remote host
 #  - dnsutils: for nslookup and dig, the BIND DNS client programs
 # Install network transfer packages
@@ -101,6 +99,9 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #  - httpie: for HTTPie, a CLI HTTP utility that makes CLI interaction with HTTP-based services as human-friendly as possible
 #  - rsync: for rsync, a fast and versatile remote (and local) file-copying tool
 #  - openssh-client: for ssh, a free client implementation of the Secure Shell protocol
+# Install crypto packages
+#  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
+#  - ca-certificates: adds trusted PEM files of CA certificates to the system
 # Install misc packages
 #  - bash-completion: to add programmable completion for the bash shell
 #  - pwgen: for pwgen, the automatic password generation tool
@@ -109,22 +110,23 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #  - byobu: for byobu, a text window manager, shell multiplexer and integrated DevOps environment
 RUN printf "Installing repositories and packages...\n" && \
     \
-    printf "Install the Package Manager related packages...\n" && \
-    apt-get update && apt-get install -qy \
-      openssl ca-certificates gpgv && \
+    printf "Refresh the APT and GPG keys...\n" && \
+    apt-key update && \
+    gpg --refresh-keys && \
     \
-    printf "Install the required packages...\n" && \
+    printf "Install the selected packages...\n" && \
     apt-get update && apt-get install -qy \
       mime-support \
       htop iotop iftop \
       bc mawk \
       file tree diffutils \
       bzip2 zip unzip xz-utils \
-      iproute2 iputils-tracepath dnsutils \
+      iproute2 iputils-ping iputils-tracepath dnsutils \
       wget httpie rsync openssh-client \
+      openssl ca-certificates \
       bash-completion pwgen dialog screen byobu && \
     \
-    printf "# Cleanup the Package Manager...\n" && \
+    printf "Cleanup the package manager...\n" && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     \
     printf "Finished installing repositories and packages...\n";
