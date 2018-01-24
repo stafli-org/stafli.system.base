@@ -71,61 +71,70 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #
 
 # Refresh the GPG keys
-# Install base packages
-#  - mailcap: to provide mime support
-# Install administration packages
-#  - htop: for htop, an interactive process viewer
-#  - iotop: for iotop, a simple top-like I/O monitor
-#  - iftop: for iftop, a simple top-like network monitor
-# Install programming packages
-#  - bc: for bc, the GNU bc arbitrary precision calculator language
-#  - mawk: for awk, a faster interpreter for the AWK Programming Language
-# Install find and revision control packages
-#  - file: for file. retrieves information about files
-#  - tree: for tree, displays directory tree, in color
-#  - diffutils: for diff, the file comparison utility
-# Install archive and compression packages
-#  - bzip2: for bzip2, a compression utility, which uses the Burrows–Wheeler algorithm
-#  - zip: for zip, the InfoZip compression utility which uses various ZIP algorithms
-#  - unzip: for unzip, the InfoZip decompression utility which uses various ZIP algorithms
-#  - xz: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
-# Install network diagnosis packages
-#  - iproute: for ip and others, the newer tools for routing and network configuration
-#  - traceroute: for traceroute/6, tools to trace the network path to a remote host
-#  - bind-utils: for nslookup and dig, the BIND DNS client programs
-# Install network transfer packages
-#  - wget: for wget, a network utility to download via FTP and HTTP protocols
-#  - httpie: for HTTPie, a CLI HTTP utility that makes CLI interaction with HTTP-based services as human-friendly as possible
-#  - rsync: for rsync, a fast and versatile remote (and local) file-copying tool
-#  - openssh-clients: for ssh, a free client implementation of the Secure Shell protocol
-# Install crypto packages
-#  - openssl: for openssl, the OpenSSL cryptographic utility required for many packages
-#  - ca-certificates: adds trusted PEM files of CA certificates to the system
-# Install misc packages
-#  - bash-completion: to add programmable completion for the bash shell
-#  - pwgen: for pwgen, the automatic password generation tool
-#  - dialog: for dialog, to provide prompts for the bash shell
-#  - screen: for screen, the terminal multiplexer with VT100/ANSI terminal emulation
-#  - byobu: for byobu, a text window manager, shell multiplexer and integrated DevOps environment
+# Refresh the package manager
+# Install the selected packages
+#   Install the base packages
+#    - mailcap: to provide mime support
+#   Install the administration packages
+#    - psmisc: for fuser and pstree, utilities that use the proc file system
+#    - htop: for htop, an interactive process viewer
+#    - iotop: for iotop, a simple top-like I/O monitor
+#    - iftop: for iftop, a simple top-like network monitor
+#    - lsof: for lsof, a utility to list open files
+#   Install the programming packages
+#    - bc: for bc, the GNU bc arbitrary precision calculator language
+#    - mawk: for awk, a faster interpreter for the AWK Programming Language
+#   Install the find and revision control packages
+#    - less: for less, pager program similar to more
+#    - file: for file. retrieves information about files
+#    - locate: for locate, which maintains and queries an index of a directory tree
+#    - diffutils: for diff, the file comparison utility
+#   Install the archive and compression packages
+#    - cpio: for cpio, the GNU cpio, a program to manage archives of files
+#    - bzip2: for bzip2, a compression utility, which uses the Burrows–Wheeler algorithm
+#    - zip: for zip, the InfoZip compression utility which uses various ZIP algorithms
+#    - unzip: for unzip, the InfoZip decompression utility which uses various ZIP algorithms
+#    - xz: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
+#   Install the network diagnosis packages
+#    - net-tools: for arp, netstat, route and others, the NET-3 networking toolkit
+#    - iproute: for ip and others, the newer tools for routing and network configuration
+#    - iputils: for ping/6, tools to test the reachability of network hosts
+#    - traceroute: for traceroute/6, tools to trace the network path to a remote host
+#    - lft: for lft, the layer-four traceroute
+#    - bind-utils: for nslookup and dig, the BIND DNS client programs
+#   Install the network transfer packages
+#    - wget: for wget, a network utility to download via FTP and HTTP protocols
+#    - httpie: for HTTPie, a CLI HTTP utility that makes CLI interaction with HTTP-based services as human-friendly as possible
+#    - rsync: for rsync, a fast and versatile remote (and local) file-copying tool
+#    - openssh-clients: for ssh, a free client implementation of the Secure Shell protocol
+#   Install the misc packages
+#    - bash-completion: to add programmable completion for the bash shell
+#    - pwgen: for pwgen, the automatic password generation tool
+#    - dialog: for dialog, to provide prompts for the bash shell
+#    - screen: for screen, the terminal multiplexer with VT100/ANSI terminal emulation
+#    - byobu: for byobu, a text window manager, shell multiplexer and integrated DevOps environment
+# Cleanup the package manager
 RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Refresh the GPG keys...\n" && \
     gpg --refresh-keys && \
     \
+    printf "Refresh the package manager...\n" && \
+    rpm --rebuilddb && yum makecache && \
+    \
     printf "Install the selected packages...\n" && \
-    yum makecache && yum install -y \
+    yum install -y \
       mailcap \
-      htop iotop iftop \
+      psmisc htop iotop iftop lsof \
       bc mawk \
-      file tree diffutils \
-      bzip2 zip unzip xz \
-      iproute traceroute bind-utils \
+      less file locate diffutils \
+      cpio bzip2 zip unzip xz \
+      net-tools iproute iputils traceroute lft bind-utils \
       wget httpie rsync openssh-clients \
-      openssl ca-certificates \
       bash-completion pwgen dialog screen byobu && \
     \
     printf "Cleanup the package manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/* && \
+    yum clean all && rm -Rf /var/lib/yum/* && rm -Rf /var/cache/yum/* && \
     \
     printf "Finished installing repositories and packages...\n";
 
