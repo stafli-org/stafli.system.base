@@ -1,6 +1,6 @@
 
 #
-#    CentOS 6 (centos6) Base10 System (dockerfile)
+#    Debian 9 (stretch) Base10 System (dockerfile)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
@@ -24,7 +24,7 @@
 #
 
 # Base image to use
-FROM stafli/stafli.system.minimal:minimal10_centos6
+FROM stafli/stafli.system.minimal:minimal10_debian9
 
 # Labels to apply
 LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Stafli Minimal System (stafli/stafli.system.minimal)" \
@@ -45,8 +45,8 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
       org.label-schema.registry-url="https://hub.docker.com/r/stafli/stafli.system.base" \
       org.label-schema.vcs-url="https://github.com/stafli-org/stafli.system.base" \
       org.label-schema.vcs-branch="master" \
-      org.label-schema.os-id="centos" \
-      org.label-schema.os-version-id="6" \
+      org.label-schema.os-id="debian" \
+      org.label-schema.os-version-id="stretch" \
       org.label-schema.os-architecture="amd64" \
       org.label-schema.version="1.0"
 
@@ -74,7 +74,7 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 # Refresh the package manager
 # Install the selected packages
 #   Install the base packages
-#    - mailcap: to provide mime support
+#    - mime-support: to provide mime support
 #   Install the administration packages
 #    - psmisc: for fuser and pstree, utilities that use the proc file system
 #    - htop: for htop, an interactive process viewer
@@ -94,19 +94,19 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #    - bzip2: for bzip2, a compression utility, which uses the Burrows–Wheeler algorithm
 #    - zip: for zip, the InfoZip compression utility which uses various ZIP algorithms
 #    - unzip: for unzip, the InfoZip decompression utility which uses various ZIP algorithms
-#    - xz: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
+#    - xz-utils: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
 #   Install the network diagnosis packages
 #    - net-tools: for arp, netstat, route and others, the NET-3 networking toolkit
-#    - iproute: for ip and others, the newer tools for routing and network configuration
-#    - iputils: for ping/6, tools to test the reachability of network hosts
-#    - traceroute: for traceroute/6, tools to trace the network path to a remote host
+#    - iproute2: for ip and others, the newer tools for routing and network configuration
+#    - iputils-ping: for ping/6, tools to test the reachability of network hosts
+#    - iputils-tracepath: for traceroute/6, tools to trace the network path to a remote host
 #    - lft: for lft, the layer-four traceroute
-#    - bind-utils: for nslookup and dig, the BIND DNS client programs
+#    - dnsutils: for nslookup and dig, the BIND DNS client programs
 #   Install the network transfer packages
 #    - wget: for wget, a network utility to download via FTP and HTTP protocols
 #    - httpie: for HTTPie, a CLI HTTP utility that makes CLI interaction with HTTP-based services as human-friendly as possible
 #    - rsync: for rsync, a fast and versatile remote (and local) file-copying tool
-#    - openssh-clients: for ssh, a free client implementation of the Secure Shell protocol
+#    - openssh-client: for ssh and sftp, a free client implementation of the Secure Shell protocol
 #   Install the misc packages
 #    - bash-completion: to add programmable completion for the bash shell
 #    - pwgen: for pwgen, the automatic password generation tool
@@ -117,24 +117,25 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 RUN printf "Installing repositories and packages...\n" && \
     \
     printf "Refresh the GPG keys...\n" && \
+    apt-key update && \
     gpg --refresh-keys && \
     \
     printf "Refresh the package manager...\n" && \
-    rpm --rebuilddb && yum makecache && \
+    apt-get update && \
     \
     printf "Install the selected packages...\n" && \
-    yum install -y \
-      mailcap \
+    apt-get install -qy \
+      mime-support \
       psmisc htop iotop iftop lsof \
       bc mawk \
       less file locate diffutils \
-      cpio bzip2 zip unzip xz \
-      net-tools iproute iputils traceroute lft bind-utils \
-      wget httpie rsync openssh-clients \
+      cpio bzip2 zip unzip xz-utils \
+      net-tools iproute2 iputils-ping iputils-tracepath lft dnsutils \
+      wget httpie rsync openssh-client \
       bash-completion pwgen dialog screen byobu && \
     \
     printf "Cleanup the package manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/* && rm -Rf /var/cache/yum/* && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && rm -Rf /var/cache/apt/* && \
     \
     printf "Finished installing repositories and packages...\n";
 

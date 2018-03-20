@@ -15,11 +15,22 @@ The images are automatically built at a [repository](https://hub.docker.com/r/st
 ## Distributions
 The services use custom images as a starting point for the following distributions:
 - __Debian__, from the [official repository](https://hub.docker.com/_/debian)
+  - [Debian 9 (stretch)](../../tree/master/debian9)
   - [Debian 8 (jessie)](../../tree/master/debian8)
   - [Debian 7 (wheezy)](../../tree/master/debian7)
 - __CentOS__, from the [official repository](https://hub.docker.com/_/centos)
   - [CentOS 7 (centos7)](../../tree/master/centos7)
   - [CentOS 6 (centos6)](../../tree/master/centos6)
+  - [CentOS 5 (centos5)](../../tree/master/centos5)
+- __Ubuntu LTS__, from the [official repository](https://hub.docker.com/_/ubuntu)
+  - [Ubuntu 16.04 (xenial)](../../tree/master/ubuntu16)
+  - [Ubuntu 14.04 (trusty)](../../tree/master/ubuntu14)
+  - [Ubuntu 12.04 (precise)](../../tree/master/ubuntu12)
+- __Alpine__, from the [official repository](https://hub.docker.com/_/alpine)
+  - [Alpine 3.7 (alpine37)](../../tree/master/alpine37)
+  - [Alpine 3.6 (alpine36)](../../tree/master/alpine36)
+  - [Alpine 3.5 (alpine35)](../../tree/master/alpine35)
+  - [Alpine 3.4 (alpine34)](../../tree/master/alpine34)
 
 ## Services
 These are the services described by the dockerfile and docker-compose files:
@@ -28,20 +39,40 @@ These are the services described by the dockerfile and docker-compose files:
 ## Images
 These are the [resulting images](https://hub.docker.com/r/stafli/stafli.system.base/tags) upon building:
 - Stable:
-  - stafli/stafli.system.base:base10_debian8   [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_debian8.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_debian8 "Get your own image badge on microbadger.com")
-  - stafli/stafli.system.base:base10_centos7   [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_centos7.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_centos7 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_debian9     [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_debian9.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_debian9 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_centos7      [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_centos7.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_centos7 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_ubuntu16   [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_ubuntu16.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_ubuntu16 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_alpine37    [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_alpine37.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_alpine37 "Get your own image badge on microbadger.com")
 - Old Stable:
-  - stafli/stafli.system.base:base10_debian7   [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_debian7.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_debian7 "Get your own image badge on microbadger.com")
-  - stafli/stafli.system.base:base10_centos6   [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_centos6.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_centos6 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_debian8     [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_debian8.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_debian8 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_centos6      [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_centos6.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_centos6 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_ubuntu14   [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_ubuntu14.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_ubuntu14 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_alpine36    [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_alpine36.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_alpine36 "Get your own image badge on microbadger.com")
+- Old Old Stable:
+  - stafli/stafli.system.base:base10_debian7      [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_debian7.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_debian7 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_centos5      [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_centos5.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_centos5 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_ubuntu12   [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_ubuntu12.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_ubuntu12 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_alpine35     [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_alpine35.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_alpine35 "Get your own image badge on microbadger.com")
+  - stafli/stafli.system.base:base10_alpine34     [![](https://images.microbadger.com/badges/image/stafli/stafli.system.base:base10_alpine34.svg)](https://microbadger.com/images/stafli/stafli.system.base:base10_alpine34 "Get your own image badge on microbadger.com")
 
 ## Containers
 These containers can be created from the images:
 - Stable:
-  - stafli_system_base10_debian8_xxx
+  - stafli_system_base10_debian9_xxx
   - stafli_system_base10_centos7_xxx
+  - stafli_system_base10_ubuntu16_xxx
+  - stafli_system_base10_alpine37_xxx
 - Old Stable:
-  - stafli_system_base10_debian7_xxx
+  - stafli_system_base10_debian8_xxx
   - stafli_system_base10_centos6_xxx
+  - stafli_system_base10_ubuntu14_xxx
+  - stafli_system_base10_alpine36_xxx
+- Old Old Stable:
+  - stafli_system_base10_debian7_xxx
+  - stafli_system_base10_centos5_xxx
+  - stafli_system_base10_ubuntu12_xxx
+  - stafli_system_base10_alpine35_xxx
+  - stafli_system_base10_alpine34_xxx
 
 ## Usage
 

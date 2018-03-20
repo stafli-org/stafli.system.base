@@ -1,6 +1,6 @@
 
 #
-#    CentOS 6 (centos6) Base10 System (dockerfile)
+#    Alpine 3.6 (alpine36) Base10 System (dockerfile)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
@@ -24,7 +24,7 @@
 #
 
 # Base image to use
-FROM stafli/stafli.system.minimal:minimal10_centos6
+FROM stafli/stafli.system.minimal:minimal10_alpine36
 
 # Labels to apply
 LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Stafli Minimal System (stafli/stafli.system.minimal)" \
@@ -45,8 +45,8 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
       org.label-schema.registry-url="https://hub.docker.com/r/stafli/stafli.system.base" \
       org.label-schema.vcs-url="https://github.com/stafli-org/stafli.system.base" \
       org.label-schema.vcs-branch="master" \
-      org.label-schema.os-id="centos" \
-      org.label-schema.os-version-id="6" \
+      org.label-schema.os-id="alpine" \
+      org.label-schema.os-version-id="36" \
       org.label-schema.os-architecture="amd64" \
       org.label-schema.version="1.0"
 
@@ -83,11 +83,10 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #    - lsof: for lsof, a utility to list open files
 #   Install the programming packages
 #    - bc: for bc, the GNU bc arbitrary precision calculator language
-#    - mawk: for awk, a faster interpreter for the AWK Programming Language
+#    - gawk: for awk, a faster interpreter for the AWK Programming Language
 #   Install the find and revision control packages
 #    - less: for less, pager program similar to more
 #    - file: for file. retrieves information about files
-#    - locate: for locate, which maintains and queries an index of a directory tree
 #    - diffutils: for diff, the file comparison utility
 #   Install the archive and compression packages
 #    - cpio: for cpio, the GNU cpio, a program to manage archives of files
@@ -97,16 +96,12 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 #    - xz: for xz, the XZ compression utility, which uses Lempel-Ziv/Markov-chain algorithm
 #   Install the network diagnosis packages
 #    - net-tools: for arp, netstat, route and others, the NET-3 networking toolkit
-#    - iproute: for ip and others, the newer tools for routing and network configuration
-#    - iputils: for ping/6, tools to test the reachability of network hosts
-#    - traceroute: for traceroute/6, tools to trace the network path to a remote host
-#    - lft: for lft, the layer-four traceroute
-#    - bind-utils: for nslookup and dig, the BIND DNS client programs
+#    - iproute2: for ip and others, the newer tools for routing and network configuration
+#    - bind-tools: for nslookup and dig, the BIND DNS client programs
 #   Install the network transfer packages
 #    - wget: for wget, a network utility to download via FTP and HTTP protocols
-#    - httpie: for HTTPie, a CLI HTTP utility that makes CLI interaction with HTTP-based services as human-friendly as possible
 #    - rsync: for rsync, a fast and versatile remote (and local) file-copying tool
-#    - openssh-clients: for ssh, a free client implementation of the Secure Shell protocol
+#    - openssh-client: for ssh and sftp, a free client implementation of the Secure Shell protocol
 #   Install the misc packages
 #    - bash-completion: to add programmable completion for the bash shell
 #    - pwgen: for pwgen, the automatic password generation tool
@@ -120,21 +115,21 @@ RUN printf "Installing repositories and packages...\n" && \
     gpg --refresh-keys && \
     \
     printf "Refresh the package manager...\n" && \
-    rpm --rebuilddb && yum makecache && \
+    apk update && \
     \
     printf "Install the selected packages...\n" && \
-    yum install -y \
+    apk add -q \
       mailcap \
       psmisc htop iotop iftop lsof \
-      bc mawk \
-      less file locate diffutils \
+      bc gawk \
+      less file diffutils \
       cpio bzip2 zip unzip xz \
-      net-tools iproute iputils traceroute lft bind-utils \
-      wget httpie rsync openssh-clients \
+      net-tools iproute2 bind-tools \
+      wget rsync openssh-client \
       bash-completion pwgen dialog screen byobu && \
     \
     printf "Cleanup the package manager...\n" && \
-    yum clean all && rm -Rf /var/lib/yum/* && rm -Rf /var/cache/yum/* && \
+    rm -Rf /var/cache/apk/* && \
     \
     printf "Finished installing repositories and packages...\n";
 

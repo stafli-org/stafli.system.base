@@ -1,6 +1,6 @@
 
 #
-#    CentOS 6 (centos6) Base10 System (dockerfile)
+#    CentOS 5 (centos5) Base10 System (dockerfile)
 #    Copyright (C) 2016-2017 Stafli
 #    Luís Pedro Algarvio
 #    This file is part of the Stafli Application Stack.
@@ -24,7 +24,7 @@
 #
 
 # Base image to use
-FROM stafli/stafli.system.minimal:minimal10_centos6
+FROM stafli/stafli.system.minimal:minimal10_centos5
 
 # Labels to apply
 LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Stafli Minimal System (stafli/stafli.system.minimal)" \
@@ -46,7 +46,7 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
       org.label-schema.vcs-url="https://github.com/stafli-org/stafli.system.base" \
       org.label-schema.vcs-branch="master" \
       org.label-schema.os-id="centos" \
-      org.label-schema.os-version-id="6" \
+      org.label-schema.os-version-id="5" \
       org.label-schema.os-architecture="amd64" \
       org.label-schema.version="1.0"
 

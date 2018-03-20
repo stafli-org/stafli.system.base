@@ -32,7 +32,7 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
       org.label-schema.schema-version="1.0.0-rc.1" \
       org.label-schema.name="Stafli Base System (stafli/stafli.system.base)" \
       org.label-schema.description="Based on Stafli Minimal System (stafli/stafli.system.minimal)" \
-      org.label-schema.keywords="stafli, base, system, debian, centos" \
+      org.label-schema.keywords="stafli, base, system, debian, centos, ubuntu, alpine" \
       org.label-schema.url="https://stafli.org/" \
       org.label-schema.license="GPLv3" \
       org.label-schema.vendor-name="Stafli" \
@@ -70,7 +70,7 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 # Packages
 #
 
-# Refresh the APT and GPG keys
+# Refresh the GPG keys
 # Refresh the package manager
 # Install the selected packages
 #   Install the base packages
@@ -116,7 +116,7 @@ LABEL description="Stafli Base System (stafli/stafli.system.base), Based on Staf
 # Cleanup the package manager
 RUN printf "Installing repositories and packages...\n" && \
     \
-    printf "Refresh the APT and GPG keys...\n" && \
+    printf "Refresh the GPG keys...\n" && \
     apt-key update && \
     gpg --refresh-keys && \
     \
